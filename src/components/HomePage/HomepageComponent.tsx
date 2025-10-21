@@ -9,6 +9,7 @@ import PromotionalBanner from './PromotionalBanner';
 import CategorySection from '../reusable/CategorySection';
 import CustomContainer from '../reusable/Container';
 import { Flex } from '@chakra-ui/react';
+import HomePageBannerNav from './HomePageBannerNav';
 
 type HomepageComponentProps = {
 	categoryData?: any;
@@ -28,6 +29,7 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 	return (
 		<PageLayout categoryData={categoryData}>
 			<HeroBanner banners={banners?.doc} />
+			<HomePageBannerNav categoryData={categoryData} />
 			<CategoryGrid categoryData={categoryData} />
 
 			<CustomContainer>
