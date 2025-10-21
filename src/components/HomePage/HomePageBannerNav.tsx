@@ -64,21 +64,33 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
     };
 
     return (
-        <Flex justify="center" bg="#fff" py={0}>
+        <Flex justify="center" bg="#fff" py={{ base: 2, md: 0 }}>
             {isLoading ? (
-                <HStack gap={0}>
+                <Flex
+                    gap={0}
+                    flexWrap="wrap"
+                    justify="center"
+                    maxW="100%"
+                >
                     {Array.from({ length: 7 }).map((_, idx) => (
                         <Skeleton
                             key={idx}
-                            height="50px"
-                            width="150px"
+                            height={{ base: '40px', md: '45px', lg: '50px' }}
+                            width={{ base: '80px', sm: '100px', md: '120px', lg: '150px' }}
                             clipPath="polygon(10% 0%, 100% 0, 90% 100%, 0% 100%)"
+                            mb={{ base: 1, md: 0 }}
                         />
                     ))}
-                </HStack>
+                </Flex>
             ) : (
-                <HStack gap={0} >
-                    {parents?.slice(0, 7).map((item, idx) => (
+                <Flex
+                    gap={0}
+                    flexWrap="wrap"
+                    justify="center"
+                    maxW="100%"
+                    w="100%"
+                >
+                    {parents?.map((item, idx) => (
                         <Box
                             key={item.id}
                             position="relative"
@@ -88,8 +100,8 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                             <ChakraLink
                                 as={Link}
                                 href={item.href}
-                                px={{ base: 8, md: 12, lg: 16, xl: 20 }}
-                                py={5}
+                                px={{ base: 4, sm: 6, md: 8, lg: 12, xl: 16, '2xl': 20 }}
+                                py={{ base: 3, md: 4, lg: 5 }}
                                 display="block"
                                 clipPath="polygon(10% 0%, 100% 0, 90% 100%, 0% 100%)"
                                 bg={hoveredCategory === item.id ? '#f9fafa' : 'transparent'}
@@ -99,7 +111,7 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                     textDecoration: 'none',
                                 }}
                                 fontWeight="semibold"
-                                fontSize="sm"
+                                fontSize={{ base: 'xs', md: 'sm' }}
                                 textAlign="center"
                                 whiteSpace="nowrap"
                             >
@@ -134,11 +146,13 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                     opacity={hoveredCategory === item.id ? 1 : 0}
                                     visibility={hoveredCategory === item.id ? 'visible' : 'hidden'}
                                     pointerEvents={hoveredCategory === item.id ? 'auto' : 'none'}
+                                    maxH={{ base: '300px', md: '400px' }}
+                                    overflowY="auto"
                                 >
                                     <Grid
                                         templateColumns={`repeat(${Math.ceil(
                                             (item.childCategories?.length || 0) / 5
-                                        )}, 1fr) ${item.image ? '180px' : ''}`}
+                                        )}, 1fr) ${item.image ? 'auto' : ''}`}
                                     >
                                         {chunkArray(item.childCategories || [], 5).map(
                                             (chunk, colIdx) => (
@@ -146,10 +160,10 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                                     {chunk?.map((sub: any) => (
                                                         <Link key={sub.id} href={sub.href}>
                                                             <Text
-                                                                w="180px"
-                                                                px={6}
+                                                                w={{ base: '140px', sm: '160px', md: '180px' }}
+                                                                px={{ base: 4, md: 6 }}
                                                                 py={2}
-                                                                fontSize="sm"
+                                                                fontSize={{ base: 'xs', md: 'sm' }}
                                                                 borderBottom="1px solid"
                                                                 borderColor="gray.100"
                                                                 _hover={{
@@ -166,7 +180,11 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                             )
                                         )}
                                         {item.image && (
-                                            <Box w="180px" h="186px" overflow="hidden">
+                                            <Box
+                                                w={{ base: '140px', sm: '160px', md: '180px' }}
+                                                h={{ base: '146px', sm: '166px', md: '186px' }}
+                                                overflow="hidden"
+                                            >
                                                 <Image
                                                     src={item.image}
                                                     alt={item.name}
@@ -181,7 +199,7 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                             )}
                         </Box>
                     ))}
-                </HStack>
+                </Flex>
             )}
         </Flex>
     );
