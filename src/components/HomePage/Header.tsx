@@ -1,4 +1,4 @@
-'use client'; // Add this at the top if not already present
+'use client';
 
 import {
 	Badge,
@@ -8,13 +8,11 @@ import {
 	HStack,
 	IconButton,
 	Image,
-	Input,
 	Text,
 	Skeleton,
-	SkeletonText,
 	Center,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react'; // Add useEffect
+import React, { useState, useEffect } from 'react';
 import NavLink from '../reusable/NavLink';
 import MobileNav from '../Navbar/MobileNav';
 import Link from 'next/link';
@@ -22,6 +20,7 @@ import CustomContainer from '../reusable/Container';
 import { useAppSelector } from '@/hooks';
 import SearchDropdown from '../common/SearchDropdownFixed';
 import { LuSearch, LuShoppingCart, LuUser } from 'react-icons/lu';
+import TopHeader from './TopHeader';
 
 type HeaderProps = {
 	categoryData?: any[];
@@ -30,9 +29,8 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 	const { loggedIn } = useAppSelector(state => state.auth);
-	const [isHydrated, setIsHydrated] = useState(false); // Add this
+	const [isHydrated, setIsHydrated] = useState(false);
 
-	// Add this useEffect
 	useEffect(() => {
 		setIsHydrated(true);
 	}, []);
@@ -87,24 +85,21 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 			left={0}
 			w='100%'
 			zIndex={1000}>
-			<CustomContainer
-				px={0}
-				pt={0}>
+			<TopHeader />
+
+			<CustomContainer px={0} pt={0}>
 				<Flex
 					py={3}
 					justify='space-between'
 					align='center'
 					gap={{ base: 2, md: 4 }}
 					w='100%'
-					px={{ base: 4, md: 7, lg: '32px', '2xl': '84px' }}>
-					<Flex display={{ base: 'block', md: 'none' }}>
+					px={{ base: 4, md: 7, lg: 15, '2xl': 20 }}>
+					{/* Mobile Menu & Search */}
+					<Flex display={{ base: 'flex', md: 'none' }} gap={0}>
 						<MobileNav parentCategories={parents} />
-
 						<Link href={'/search'}>
-							<IconButton
-								variant='ghost'
-								aria-label='Account'
-								size='md'>
+							<IconButton variant='ghost' aria-label='Search' size='md'>
 								<LuSearch />
 							</IconButton>
 						</Link>
@@ -112,40 +107,123 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 
 					{/* Logo */}
 					<Link href={'/'}>
-						<Image
-							src='/ddong-logo.png'
-							alt='DDONG'
-							h='40px'
-							flexShrink={0}
-						/>
+						<Image src='/ddong-logo.png' alt='DDONG' h='40px' flexShrink={0} />
 					</Link>
 
-					{/* Search Bar */}
-					<Box display={{ base: 'none', lg: 'block' }}>
-						<SearchDropdown placeholder='Search products...' />
-					</Box>
+					{/* Desktop Categories Navigation - Hidden on Mobile */}
+					<Flex
+						justify='center'
+						align='center'
+						display={{ base: 'none', md: 'flex' }}
+						flex='1'>
+						{isLoading ? (
+							<HStack gap={8}>
+								{Array.from({ length: 7 }).map((_, idx) => (
+									<Skeleton key={idx} height='20px' width='80px' borderRadius='md' />
+								))}
+							</HStack>
+						) : (
+							<HStack gap={8}>
+								{parents?.slice(0, 7).map((item, idx) => (
+									<Box
+										key={item.id}
+										position='relative'
+										onMouseEnter={() => setHoveredCategory(item.id)}
+										onMouseLeave={() => setHoveredCategory(null)}>
+										<NavLink href={`/category/${item.id}`}>{item.name}</NavLink>
 
-					{/* Icons */}
-					<HStack>
-						{/* UPDATED CODE - Always render login link initially */}
+										{/* Invisible bridge to prevent gap */}
+										<Box
+											position='absolute'
+											top='100%'
+											left={0}
+											width='220px'
+											height='10px'
+											bg='transparent'
+											zIndex={98}
+											display={hoveredCategory === item.id ? 'block' : 'none'}
+										/>
+
+										{/* Subcategories Dropdown */}
+										{item?.childCategories?.length > 0 && (
+											<Box
+												position='absolute'
+												top='calc(100% + 10px)'
+												left={idx < 3 ? '0' : 'auto'}
+												right={idx > 3 ? '0' : 'auto'}
+												bg='white'
+												overflow='hidden'
+												boxShadow='md'
+												borderRadius='md'
+												zIndex={99}
+												transition='opacity 0.2s ease'
+												opacity={hoveredCategory === item.id ? 1 : 0}
+												visibility={hoveredCategory === item.id ? 'visible' : 'hidden'}
+												pointerEvents={hoveredCategory === item.id ? 'auto' : 'none'}>
+												<Grid
+													templateColumns={`repeat(${Math.ceil(
+														(item.childCategories?.length || 0) / 5
+													)}, 1fr) ${item.image ? '180px' : ''}`}>
+													{chunkArray(item.childCategories || [], 5).map((chunk, colIdx) => (
+														<Box key={colIdx}>
+															{chunk?.map((sub: any) => (
+																<Link key={sub.id} href={sub.href}>
+																	<Text
+																		w='180px'
+																		px={6}
+																		py={2}
+																		fontSize='sm'
+																		borderBottom='1px solid'
+																		borderColor='gray.100'
+																		_hover={{
+																			bg: 'gray.50',
+																			color: 'blue.500',
+																		}}
+																		_last={{ borderBottom: 'none' }}>
+																		{sub.label}
+																	</Text>
+																</Link>
+															))}
+														</Box>
+													))}
+													{item.image && (
+														<Box w='180px' h='186px' overflow='hidden'>
+															<Image
+																src={item.image}
+																alt={item.name}
+																w='100%'
+																h='100%'
+																objectFit='cover'
+															/>
+														</Box>
+													)}
+												</Grid>
+											</Box>
+										)}
+									</Box>
+								))}
+							</HStack>
+						)}
+					</Flex>
+
+					{/* Right Side - Search & Icons */}
+					<HStack gap={2}>
+						{/* Desktop Search */}
+						<Box display={{ base: 'none', lg: 'block' }}>
+							<SearchDropdown placeholder='Search products...' />
+						</Box>
+
+						{/* User Icon */}
 						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
-							<IconButton
-								variant='ghost'
-								aria-label='Account'
-								size='md'>
+							<IconButton variant='ghost' aria-label='Account' size='md'>
 								<LuUser />
 							</IconButton>
 						</Link>
 
-						{/* <IconButton variant='ghost' aria-label='Notifications' size='sm'>
-							<LuBell />
-						</IconButton> */}
+						{/* Cart Icon with Badge */}
 						<Box position='relative'>
 							<Link href={'/checkout'}>
-								<IconButton
-									variant='ghost'
-									aria-label='Cart'
-									size='md'>
+								<IconButton variant='ghost' aria-label='Cart' size='md'>
 									<LuShoppingCart />
 								</IconButton>
 							</Link>
@@ -158,8 +236,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									top='-1'
 									right='-1'
 									fontSize='xs'
-									minW='22px'
-									h='22px'
+									minW='20px'
+									h='20px'
 									display='flex'
 									alignItems='center'
 									justifyContent='center'>
@@ -169,112 +247,6 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 						</Box>
 					</HStack>
 				</Flex>
-
-				<Box
-					border={'0.5px solid'}
-					borderColor={'#e8e8e8'}
-					mt={0}
-					display={{ base: 'none', md: 'block' }}></Box>
-
-				{isLoading ? (
-					<Center
-						display={{ base: 'none', md: 'flex' }}
-						h='40px'>
-						<HStack gap={8}>
-							{Array.from({ length: 7 }).map((_, idx) => (
-								<Skeleton
-									key={idx}
-									height='20px'
-									width='80px'
-									borderRadius='md'
-								/>
-							))}
-						</HStack>
-					</Center>
-				) : (
-					<Center
-						display={{ base: 'none', md: 'flex' }}
-						h='40px'>
-						<HStack gap={8}>
-							{parents?.slice(0, 7).map((item, idx) => (
-								<Box
-									key={item.id}
-									position='relative'
-									onMouseEnter={() => setHoveredCategory(item.id)}
-									onMouseLeave={() => setHoveredCategory(null)}>
-									<NavLink href={`/category/${item.id}`}>{item.name}</NavLink>
-
-									<Box
-										position='absolute'
-										top='100%'
-										left={0}
-										width='220px'
-										height='10px'
-										bg='transparent'
-										zIndex={98}
-										display={hoveredCategory === item.id ? 'block' : 'none'}
-									/>
-
-									<Box
-										position='absolute'
-										top='calc(100% + 10px)'
-										left={(idx < 3 && '0') || 'auto'}
-										right={(idx > 3 && '0') || 'auto'}
-										bg='white'
-										overflow={'hidden'}
-										boxShadow='md'
-										borderRadius='md'
-										zIndex={99}
-										transition='opacity 0.2s ease'
-										opacity={hoveredCategory === item.id ? 1 : 0}
-										visibility={hoveredCategory === item.id ? 'visible' : 'hidden'}
-										pointerEvents={hoveredCategory === item.id ? 'auto' : 'none'}>
-										{item?.childCategories?.length > 0 && (
-											<Grid
-												templateColumns={`repeat(${Math.ceil(
-													(item.childCategories?.length || 0) / 5
-												)}, 1fr) 180px`}>
-												{chunkArray(item.childCategories || [], 5).map((chunk, colIdx) => (
-													<Box key={colIdx}>
-														{chunk?.map((sub: any) => (
-															<Link
-																key={sub.id}
-																href={sub.href}>
-																<Text
-																	w='180px'
-																	px={6}
-																	py={2}
-																	fontSize='sm'
-																	borderBottom='1px solid'
-																	borderColor='gray.100'
-																	_hover={{
-																		bg: 'gray.50',
-																		color: 'blue.500',
-																	}}
-																	_last={{ borderBottom: 'none' }}>
-																	{sub.label}
-																</Text>
-															</Link>
-														))}
-													</Box>
-												))}
-												{item.image && (
-													<Image
-														src={item.image}
-														alt={item.name}
-														w='100%'
-														h='186px'
-														objectFit='cover'
-													/>
-												)}
-											</Grid>
-										)}
-									</Box>
-								</Box>
-							))}
-						</HStack>
-					</Center>
-				)}
 			</CustomContainer>
 		</Box>
 	);
