@@ -10,8 +10,8 @@ import ReduxProvider from '@/lib/providers/ReduxProvider';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-	title: 'Ddong Lifestyle',
-	description: 'Ddong Lifestyle',
+	title: 'Alarm Lifestyle',
+	description: 'Alarm Lifestyle',
 };
 
 export default function RootLayout({
