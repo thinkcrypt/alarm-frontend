@@ -10,7 +10,6 @@ import {
 	Image,
 	Text,
 	Skeleton,
-	Center,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import NavLink from '../reusable/NavLink';
@@ -19,8 +18,10 @@ import Link from 'next/link';
 import CustomContainer from '../reusable/Container';
 import { useAppSelector } from '@/hooks';
 import SearchDropdown from '../common/SearchDropdownFixed';
-import { LuSearch, LuShoppingCart, LuUser } from 'react-icons/lu';
+import { LuSearch, LuShoppingCart, LuUser, LuBell } from 'react-icons/lu';
 import TopHeader from './TopHeader';
+import AlarmLogo from './AlarmLogoComponent';
+
 
 type HeaderProps = {
 	categoryData?: any[];
@@ -105,9 +106,9 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 						</Link>
 					</Flex>
 
-					{/* Logo */}
+					{/* Logo - Using AlarmLogo Component */}
 					<Link href={'/'}>
-						<Image src='/ddong-logo.png' alt='DDONG' h='40px' flexShrink={0} />
+						<AlarmLogo />
 					</Link>
 
 					{/* Desktop Categories Navigation - Hidden on Mobile */}
@@ -213,13 +214,6 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							<SearchDropdown placeholder='Search products...' />
 						</Box>
 
-						{/* User Icon */}
-						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
-							<IconButton variant='ghost' aria-label='Account' size='md'>
-								<LuUser />
-							</IconButton>
-						</Link>
-
 						{/* Cart Icon with Badge */}
 						<Box position='relative'>
 							<Link href={'/checkout'}>
@@ -245,6 +239,18 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 								</Badge>
 							)}
 						</Box>
+
+						{/* Bell/Notification Icon - Static (No functionality) */}
+						<IconButton variant='ghost' aria-label='Notifications' size='md'>
+							<LuBell />
+						</IconButton>
+
+						{/* User Icon */}
+						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
+							<IconButton variant='ghost' aria-label='Account' size='md'>
+								<LuUser />
+							</IconButton>
+						</Link>
 					</HStack>
 				</Flex>
 			</CustomContainer>

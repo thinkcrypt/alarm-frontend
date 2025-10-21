@@ -106,17 +106,15 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
 	return (
 		<Box
 			position='relative'
-			flex='1'
-			maxW='600px'
-			minW={{ base: '150px', md: '600px' }}
+			w='100%'
 			ref={dropdownRef}>
 			<form onSubmit={handleSearchSubmit}>
-				<Box position='relative'>
+				<Box position='relative' display='flex' justifyContent='flex-end'>
 					<Input
 						placeholder={placeholder}
 						bg='gray.50'
 						size='sm'
-						w='100%'
+						w='85%'
 						pr='40px'
 						borderRadius='full'
 						value={searchValue}
@@ -143,8 +141,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
 				<Box
 					position='absolute'
 					top='100%'
-					left={0}
 					right={0}
+					w='70%'
 					bg='white'
 					borderRadius='md'
 					boxShadow='lg'
