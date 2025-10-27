@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Text, Flex, Box } from '@chakra-ui/react';
 import React from 'react';
 import { colors } from '../data/color';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ interface SectionHeader2Props {
 	title: string;
 	bgColor?: string;
 	py?: number | string;
-	mb?: number | string;
+	mb?: number | string | Record<string, number | string>;
 	fontSize?: string | number;
 	href?: string;
 }
@@ -15,23 +15,44 @@ interface SectionHeader2Props {
 const SectionHeader2: React.FC<SectionHeader2Props> = ({
 	title,
 	py = 3,
+
 	mb = 8,
 	fontSize = '2xl',
 	href,
 }) => {
 	return (
 		<Link href={href || '#'}>
-			<Text
+			<Flex
+				align="center"
+				justify="center"
+				gap={4}
+				mb={{ base: 4, md: mb }}
+				w="100%"
 				cursor='pointer'
-				fontSize={fontSize}
-				fontWeight='bold'
-				w='full'
-				bgColor={colors.sectionHeaderBg}
-				py={py}
-				textAlign='center'
-				mb={{ base: 4, md: mb }}>
-				{title}
-			</Text>
+			>
+				<Box
+					flex={1}
+					h="2px"
+					bg="gray"
+					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '300px' }}
+				/>
+				<Text
+					fontSize={fontSize}
+					fontWeight='bold'
+					color="black"
+					textAlign="center"
+					whiteSpace="nowrap"
+					py={py}
+				>
+					{title}
+				</Text>
+				<Box
+					flex={1}
+					h="2px"
+					bg="gray"
+					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '300px' }}
+				/>
+			</Flex>
 		</Link>
 	);
 };

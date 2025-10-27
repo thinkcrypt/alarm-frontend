@@ -1,10 +1,9 @@
 import { Box, Grid } from '@chakra-ui/react';
 import React from 'react';
 import ProductCard from '../reusable/ProductCard';
-import SectionHeader2 from '../reusable/SectionHeader2';
-import CustomContainer from '../reusable/Container';
-import { get } from 'http';
+
 import { getAllProduct } from '@/lib/ssr/getAllProduct';
+import SectionHeader2 from '../reusable/SectionHeader2';
 
 interface ProductSectionProps {
 	title: string;
@@ -14,9 +13,10 @@ interface ProductSectionProps {
 
 const ProductSection: React.FC<ProductSectionProps> = async ({ title, products, id }) => {
 	const productData = await getAllProduct(id, '6');
+
 	return (
-		<div>
-			<SectionHeader2 title={title} />
+		<Box mb={{ base: 8, md: 12 }}>
+			<SectionHeader2 title={title} mb={{ base: 6, md: 8 }} />
 			<Grid
 				templateColumns={{
 					base: 'repeat(2, 1fr)',
@@ -30,11 +30,11 @@ const ProductSection: React.FC<ProductSectionProps> = async ({ title, products, 
 				{productData?.doc?.map((product: any, index: number) => (
 					<ProductCard
 						key={index}
-						product={product} // only this prop
+						product={product}
 					/>
 				))}
 			</Grid>
-		</div>
+		</Box>
 	);
 };
 
