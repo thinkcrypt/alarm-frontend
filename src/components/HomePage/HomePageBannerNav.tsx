@@ -175,7 +175,7 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                 />
 
                                 {/* Subcategories Dropdown */}
-                                {item?.childCategories?.length > 0 && (
+                                {/* {item?.childCategories?.length > 0 && (
                                     <Box
                                         position="absolute"
                                         top="calc(100% + 10px)"
@@ -240,7 +240,7 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
                                             )}
                                         </Grid>
                                     </Box>
-                                )}
+                                )} */}
                             </Box>
                         ))}
                     </Flex>

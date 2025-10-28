@@ -9,7 +9,7 @@ const CustomContainer: React.FC<ContainerProps> = ({ children, ...rest }) => {
 	return (
 		<Box
 			px={{ base: 4, md: 7, lg: '32px', '2xl': '84px' }} // responsive padding
-			pt={{ base: 4, md: 5, lg: 8, '2xl': 10 }}
+			pt={{ base: 4, md: 5, lg: 8, 'xl': 11, '2xl': 10 }}
 			{...rest} // allow additional props like bg, border, etc.
 		>
 			{children}

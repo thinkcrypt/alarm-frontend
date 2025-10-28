@@ -27,7 +27,7 @@ const SectionHeader2: React.FC<SectionHeader2Props> = ({
 				justify="center"
 				gap={4}
 				mb={{ base: 4, md: mb }}
-				mt={4}
+
 				w="100%"
 				cursor='pointer'
 				backgroundColor="#F5F8F8"
@@ -53,7 +53,7 @@ const SectionHeader2: React.FC<SectionHeader2Props> = ({
 				<Box
 					flex={1}
 					h="2px"
-					bg="gray.400"
+					bg="gray.300"
 					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '500px' }}
 				/>
 			</Flex>

@@ -174,7 +174,7 @@ const BigDeals = () => (
 						<GridItem key={store.id}>
 							<Box
 								p={5}
-								bgColor={colors.cardBg}
+								bgColor="#F5F8F8"
 								h='100%'>
 								<Text
 									fontSize='16px'
