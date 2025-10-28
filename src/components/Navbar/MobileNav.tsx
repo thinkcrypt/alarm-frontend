@@ -18,32 +18,46 @@ const MobileNav: React.FC<MobileNavProps> = ({ parentCategories }) => {
 				<PrimaryButton
 					variant='outline'
 					border='none'
-					size='md'
-					display={{ base: 'inline-flex', md: 'none' }}
+					size={{ base: 'md', md: 'lg' }}
+					p={{ base: 2, md: 3 }}
+					minW={{ base: '40px', md: '48px' }}
+					h={{ base: '48px', md: '48px' }}
+					display='inline-flex'
+					alignItems='center'
+					justifyContent='center'
 					aria-label='Open menu'>
-					<HiMenu size={32} />
+					<HiMenu size={40} />
 				</PrimaryButton>
 			</Drawer.Trigger>
 			<Portal>
 				<Drawer.Backdrop />
 				<Drawer.Positioner>
-					<Drawer.Content maxWidth='300px'>
-						<Drawer.Header>
-							<Drawer.Title>Menu</Drawer.Title>
+					<Drawer.Content maxWidth={{ base: '280px', md: '320px' }}>
+						<Drawer.Header borderBottom='1px solid' borderColor='gray.200' pb={3}>
+							<Drawer.Title fontSize={{ base: 'lg', md: 'xl' }} fontWeight='bold'>
+								Menu
+							</Drawer.Title>
 							<Drawer.CloseTrigger asChild>
-								<CloseButton size='sm' />
+								<CloseButton size={{ base: 'sm', md: 'md' }} />
 							</Drawer.CloseTrigger>
 						</Drawer.Header>
 
-						<Drawer.Body>
-							<VStack gap={4} align='stretch'>
+						<Drawer.Body pt={4}>
+							<VStack gap={{ base: 3, md: 4 }} align='stretch'>
 								{parentCategories?.map((item: any, index: number) => (
 									<Link key={index} href={`/category/${item?.id}`}>
 										<Text
 											onClick={() => setOpen(false)}
 											fontWeight='semibold'
-											fontSize='lg'
-											_hover={{ color: 'blue.500' }}>
+											fontSize={{ base: 'md', md: 'lg' }}
+											py={{ base: 2, md: 2.5 }}
+											px={{ base: 2, md: 3 }}
+											borderRadius='md'
+											transition='all 0.2s'
+											_hover={{
+												color: 'blue.500',
+												bg: 'gray.50'
+											}}>
 											{item.name}
 										</Text>
 									</Link>

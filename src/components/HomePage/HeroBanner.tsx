@@ -9,22 +9,20 @@ import 'swiper/css/navigation';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// const slides = [
-// 	{ id: 1, image: '/image-2.webp', logo: '/ddong-logo.png' },
-// 	{ id: 2, image: '/image-3.webp', logo: '/ddong-logo.png' },
-// 	{ id: 3, image: '/image-4.webp', logo: '/ddong-logo.png' },
-// ];
-
 const HeroBanner = ({ banners }: { banners: any }) => (
 	<Box
 		position='relative'
-		w='100%'
-		h='100%'>
+		w='100vw'
+		maxW='100%'
+		marginLeft='50%'
+		transform='translateX(-50%)'
+		overflow='hidden'>
 		<Swiper
 			modules={[Autoplay, Pagination]}
 			autoplay={{ delay: 4000, disableOnInteraction: false }}
 			pagination={{ clickable: true }}
-			loop>
+			loop
+			style={{ width: '100%' }}>
 			{banners?.map((slide: any) => (
 				<SwiperSlide key={slide._id}>
 					<Box
@@ -32,6 +30,7 @@ const HeroBanner = ({ banners }: { banners: any }) => (
 						bgSize='cover'
 						backgroundPosition='center'
 						h={{ base: '40vh', sm: '60vh', md: '75vh' }}
+						w='100%'
 						color='white'
 						position='relative'
 						display='flex'

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import HeroBanner from './HeroBanner';
 import CategoryGrid from './CategoryGrid';
 import ProductSection from './ProductSection';
@@ -8,7 +8,7 @@ import PageLayout from '../Layout/PageLayout';
 import PromotionalBanner from './PromotionalBanner';
 import CategorySection from '../reusable/CategorySection';
 import CustomContainer from '../reusable/Container';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Box } from '@chakra-ui/react';
 import HomePageBannerNav from './HomePageBannerNav';
 
 type HomepageComponentProps = {
@@ -28,8 +28,12 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 
 	return (
 		<PageLayout categoryData={categoryData}>
-			<HeroBanner banners={banners?.doc} />
-			<HomePageBannerNav categoryData={categoryData} />
+			{/* Full Width Banner Section - Outside Container */}
+			<Box w="100%" px={0} mx={0}>
+				<HeroBanner banners={banners?.doc} />
+				<HomePageBannerNav categoryData={categoryData} />
+			</Box>
+
 			<CategoryGrid categoryData={categoryData} />
 
 			<CustomContainer>
@@ -44,11 +48,6 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 			</CustomContainer>
 
 			<CategoryShowcase categoryData={categoryData} />
-			{/* <ProductSection title='Signature Product' products={signatureProducts} /> */}
-			{/* <SpecialOffers
-				categories={displayInHomeCategories}
-				// productData={productData}
-			/> */}
 
 			<CustomContainer pb={10}>
 				<Flex

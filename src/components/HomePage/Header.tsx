@@ -22,7 +22,6 @@ import { LuSearch, LuShoppingCart, LuUser, LuBell } from 'react-icons/lu';
 import TopHeader from './TopHeader';
 import AlarmLogo from './AlarmLogoComponent';
 
-
 type HeaderProps = {
 	categoryData?: any[];
 	isLoading?: boolean;
@@ -86,37 +85,108 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 			left={0}
 			w='100%'
 			zIndex={1000}>
-			<TopHeader />
+			<Box display={{ base: 'none', md: 'block' }}>
+				<TopHeader />
+			</Box>
 
 			<CustomContainer px={0} pt={0}>
+				{/* Mobile, Medium, and Large Layout (base to lg) */}
 				<Flex
+					display={{ base: 'flex', xl: 'none' }}
 					py={3}
 					justify='space-between'
 					align='center'
-					gap={{ base: 2, md: 4 }}
 					w='100%'
-					px={{ base: 4, md: 7, lg: 15, '2xl': 20 }}>
-					{/* Mobile Menu & Search */}
-					<Flex display={{ base: 'flex', md: 'none' }} gap={0}>
-						<MobileNav parentCategories={parents} />
+					px={{ base: 1, md: 3, lg: 3, xl: 0 }}>
+					{/* Left Side - Menu & Logo */}
+					<Flex align='center' gap={{ base: 2, md: 3, lg: 4 }}>
+						<Box display='flex' alignItems='center'>
+							<MobileNav parentCategories={parents} />
+						</Box>
+						<Box display='flex' alignItems='center'>
+							<Link href={'/'}>
+								<AlarmLogo />
+							</Link>
+						</Box>
+					</Flex>
+
+					{/* Right Side - Icons */}
+					<HStack gap={{ base: 0, md: 1 }} >
 						<Link href={'/search'}>
-							<IconButton variant='ghost' aria-label='Search' size='md'>
+							<IconButton
+								variant='ghost'
+								aria-label='Search'
+								size={{ base: 'md', md: 'lg' }}
+								fontSize={{ base: '20px', md: '22px' }}>
 								<LuSearch />
 							</IconButton>
 						</Link>
-					</Flex>
 
-					{/* Logo - Using AlarmLogo Component */}
+						<Box position='relative'>
+							<Link href={'/checkout'}>
+								<IconButton
+									variant='ghost'
+									aria-label='Cart'
+									size={{ base: 'md', md: 'lg' }}
+									fontSize={{ base: '20px', md: '22px' }}>
+									<LuShoppingCart />
+								</IconButton>
+							</Link>
+							{totalItems > 0 && (
+								<Badge
+									bg='red.500'
+									color='white'
+									borderRadius='full'
+									position='absolute'
+									top={{ base: '-1', md: '0' }}
+									right={{ base: '-1', md: '0' }}
+									fontSize='xs'
+									minW='20px'
+									h='20px'
+									display='flex'
+									alignItems='center'
+									justifyContent='center'>
+									{totalItems}
+								</Badge>
+							)}
+						</Box>
+
+						<IconButton
+							variant='ghost'
+							aria-label='Notifications'
+							size={{ base: 'md', md: 'lg' }}
+							fontSize={{ base: '20px', md: '22px' }}>
+							<LuBell />
+						</IconButton>
+
+						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
+							<IconButton
+								variant='ghost'
+								aria-label='Account'
+								size={{ base: 'md', md: 'lg' }}
+								fontSize={{ base: '20px', md: '22px' }}>
+								<LuUser />
+							</IconButton>
+						</Link>
+					</HStack>
+				</Flex>
+
+				{/* Desktop Layout (xl and above) - Original Design */}
+				<Flex
+					display={{ base: 'none', xl: 'flex' }}
+					py={3}
+					justify='space-between'
+					align='center'
+					gap={4}
+					w='100%'
+					px={{ xl: 7, '2xl': 20 }}>
+					{/* Logo */}
 					<Link href={'/'}>
 						<AlarmLogo />
 					</Link>
 
-					{/* Desktop Categories Navigation - Hidden on Mobile */}
-					<Flex
-						justify='center'
-						align='center'
-						display={{ base: 'none', md: 'flex' }}
-						flex='1'>
+					{/* Desktop Categories Navigation */}
+					<Flex justify='center' align='center' flex='1'>
 						{isLoading ? (
 							<HStack gap={8}>
 								{Array.from({ length: 7 }).map((_, idx) => (
@@ -129,6 +199,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									<Box
 										key={item.id}
 										position='relative'
+										fontWeight='bold'
 										onMouseEnter={() => setHoveredCategory(item.id)}
 										onMouseLeave={() => setHoveredCategory(null)}>
 										<NavLink href={`/category/${item.id}`}>{item.name}</NavLink>
@@ -209,12 +280,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 
 					{/* Right Side - Search & Icons */}
 					<HStack gap={2}>
-						{/* Desktop Search */}
-						<Box display={{ base: 'none', lg: 'block' }}>
-							<SearchDropdown placeholder='Search products...' />
-						</Box>
+						<SearchDropdown placeholder='Search products...' />
 
-						{/* Cart Icon with Badge */}
 						<Box position='relative'>
 							<Link href={'/checkout'}>
 								<IconButton variant='ghost' aria-label='Cart' size='md'>
@@ -240,12 +307,10 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							)}
 						</Box>
 
-						{/* Bell/Notification Icon - Static (No functionality) */}
 						<IconButton variant='ghost' aria-label='Notifications' size='md'>
 							<LuBell />
 						</IconButton>
 
-						{/* User Icon */}
 						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
 							<IconButton variant='ghost' aria-label='Account' size='md'>
 								<LuUser />
