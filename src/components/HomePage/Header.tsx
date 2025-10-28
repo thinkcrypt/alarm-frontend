@@ -173,22 +173,24 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 					</HStack>
 				</Flex>
 
-				{/* Desktop Layout (xl and above) - Original Design */}
-				<Flex
-					display={{ base: 'none', xl: 'flex' }}
+				{/* Desktop Layout (xl and above) - Grid Layout */}
+				<Grid
+					display={{ base: 'none', xl: 'grid' }}
+					templateColumns='1fr 2fr 1fr'
 					py={3}
-					justify='space-between'
-					align='center'
+					alignItems='center'
 					gap={4}
 					w='100%'
 					px={{ xl: 7, '2xl': 20 }}>
-					{/* Logo */}
-					<Link href={'/'}>
-						<AlarmLogo />
-					</Link>
+					{/* Left Side - Logo */}
+					<Box justifySelf='start'>
+						<Link href={'/'}>
+							<AlarmLogo />
+						</Link>
+					</Box>
 
-					{/* Desktop Categories Navigation */}
-					<Flex justify='center' align='center' flex='1'>
+					{/* Middle - Desktop Categories Navigation */}
+					<Flex justify='center' align='center'>
 						{isLoading ? (
 							<HStack gap={8}>
 								{Array.from({ length: 7 }).map((_, idx) => (
@@ -284,7 +286,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 					</Flex>
 
 					{/* Right Side - Search & Icons */}
-					<HStack gap={2}>
+					<HStack gap={2} justifySelf='end'>
 						<SearchDropdown placeholder='Search products...' />
 
 						<Box position='relative'>
@@ -322,7 +324,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							</IconButton>
 						</Link>
 					</HStack>
-				</Flex>
+				</Grid>
 			</CustomContainer>
 		</Box>
 	);
