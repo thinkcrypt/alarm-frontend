@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
 							fontWeight='bold'
 							color='white'
 							textTransform='uppercase'>
-							About DDong
+							About ALARM
 						</Text>
 						<Text
 							fontSize='12px'
@@ -188,7 +188,7 @@ const Footer: React.FC = () => {
 							<Text
 								fontSize='12px'
 								color='gray.400'>
-								© 2025. DDONG BD | All rights reserved.
+								© 2025. ALARM BD | All rights reserved.
 							</Text>
 						</HStack>
 

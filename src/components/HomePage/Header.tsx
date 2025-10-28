@@ -21,6 +21,8 @@ import SearchDropdown from '../common/SearchDropdownFixed';
 import { LuSearch, LuShoppingCart, LuUser, LuBell } from 'react-icons/lu';
 import TopHeader from './TopHeader';
 import AlarmLogo from './AlarmLogoComponent';
+import { ShoppingBag } from 'lucide-react';
+import { HiOutlineShoppingBag } from 'react-icons/hi';
 
 type HeaderProps = {
 	categoryData?: any[];
@@ -93,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 				{/* Mobile, Medium, and Large Layout (base to lg) */}
 				<Flex
 					display={{ base: 'flex', xl: 'none' }}
-					py={3}
+					py={1.5}
 					justify='space-between'
 					align='center'
 					w='100%'
@@ -129,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									aria-label='Cart'
 									size={{ base: 'md', md: 'lg' }}
 									fontSize={{ base: '20px', md: '22px' }}>
-									<LuShoppingCart />
+									<HiOutlineShoppingBag />
 								</IconButton>
 							</Link>
 							{totalItems > 0 && (
@@ -138,8 +140,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									color='white'
 									borderRadius='full'
 									position='absolute'
-									top={{ base: '-1', md: '0' }}
-									right={{ base: '-1', md: '0' }}
+									top={{ base: '-0', md: '-0' }}
+									right={{ base: '-0', md: '-0' }}
 									fontSize='xs'
 									minW='20px'
 									h='20px'
@@ -151,13 +153,13 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							)}
 						</Box>
 
-						<IconButton
+						{/* <IconButton
 							variant='ghost'
 							aria-label='Notifications'
 							size={{ base: 'md', md: 'lg' }}
 							fontSize={{ base: '20px', md: '22px' }}>
 							<LuBell />
-						</IconButton>
+						</IconButton> */}
 
 						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
 							<IconButton
@@ -199,10 +201,13 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									<Box
 										key={item.id}
 										position='relative'
-										fontWeight='bold'
 										onMouseEnter={() => setHoveredCategory(item.id)}
 										onMouseLeave={() => setHoveredCategory(null)}>
-										<NavLink href={`/category/${item.id}`}>{item.name}</NavLink>
+										<NavLink href={`/category/${item.id}`}>
+											<Text fontWeight='bold' textTransform='uppercase'>
+												{item.name}
+											</Text>
+										</NavLink>
 
 										{/* Invisible bridge to prevent gap */}
 										<Box
@@ -285,7 +290,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 						<Box position='relative'>
 							<Link href={'/checkout'}>
 								<IconButton variant='ghost' aria-label='Cart' size='md'>
-									<LuShoppingCart />
+									<HiOutlineShoppingBag />
 								</IconButton>
 							</Link>
 							{totalItems > 0 && (
@@ -294,8 +299,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									color='white'
 									borderRadius='full'
 									position='absolute'
-									top='-1'
-									right='-1'
+									top='-0'
+									right='-0'
 									fontSize='xs'
 									minW='20px'
 									h='20px'
@@ -307,9 +312,9 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							)}
 						</Box>
 
-						<IconButton variant='ghost' aria-label='Notifications' size='md'>
+						{/* <IconButton variant='ghost' aria-label='Notifications' size='md'>
 							<LuBell />
-						</IconButton>
+						</IconButton> */}
 
 						<Link href={isHydrated && loggedIn ? '/user-profile' : '/login'}>
 							<IconButton variant='ghost' aria-label='Account' size='md'>

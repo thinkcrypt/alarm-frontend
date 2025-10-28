@@ -15,7 +15,7 @@ const ProductSection: React.FC<ProductSectionProps> = async ({ title, products, 
 	const productData = await getAllProduct(id, '6');
 
 	return (
-		<Box mb={{ base: 8, md: 12 }} borderRadius="md">
+		<Box borderRadius="md">
 			<SectionHeader2 title={title} mb={{ base: 6, md: 8 }} />
 			<Grid
 				templateColumns={{

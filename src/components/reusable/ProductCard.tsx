@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 	return (
 		<Box
 			overflow='hidden'
-			bg="#e5e5e5"
+			bg="#F5F8F8"
 			// border='1px solid'
 			borderColor='gray.100'
 			borderRadius={'md'}>
