@@ -1,9 +1,9 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
-const AlarmLogo: React.FC = () => {
+const AlarmLogoDark: React.FC = () => {
     return (
-        <Flex  align='center' gap={0} h='40px'>
+        <Flex p={4} backgroundColor="white" align='center' gap={0} h='40px'>
             {/* "ala" text */}
             <Text
                 fontSize='32px'
@@ -77,4 +77,4 @@ const AlarmLogo: React.FC = () => {
     );
 };
 
-export default AlarmLogo;
+export default AlarmLogoDark;

@@ -29,6 +29,7 @@ const SectionHeader2: React.FC<SectionHeader2Props> = ({
 				mb={{ base: 4, md: mb }}
 				w="100%"
 				cursor='pointer'
+				backgroundColor="#e5e5e5"
 			>
 				<Box
 					flex={1}

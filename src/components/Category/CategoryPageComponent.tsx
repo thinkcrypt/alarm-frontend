@@ -2,15 +2,12 @@
 import React, { FC, useState } from 'react';
 import PageLayout from '../Layout/PageLayout';
 import HeaderGrid from './HeaderGrid';
-import { Flex, Grid, Box } from '@chakra-ui/react';
-import { products } from '../data/productData';
+import { Flex, Grid, Box, Drawer, Button, Portal } from '@chakra-ui/react';
 import CategoryFilterSection from './CategoryFilterSection';
 import MobileFilterSidebar from './MobileFilterSidebar';
 import ProductCard from '../reusable/ProductCard';
-import ProductCardV2 from '../reusable/ProductCardV2';
 import AdditionalInfo from '../ProductPage/AdditionalInfo';
-import Link from 'next/link';
-import { useGetAllQuery, useGetByIdQuery } from '@/store/services/commonApi';
+import { useGetAllQuery } from '@/store/services/commonApi';
 
 type CategoryPageComponentProps = {
 	singleCategoryData?: any;
@@ -23,46 +20,53 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 	categoryProducts,
 	categoryData,
 }) => {
-	const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 	const categoryName = singleCategoryData?.name;
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+	// Filter states
 	const [sort, setSort] = useState('-createdAt');
-	const [clr, setColors] = useState<string[]>([]);
-	const [sz, setSizes] = useState<string[]>([]);
+	const [colors, setColors] = useState<string[]>([]);
+	const [sizes, setSizes] = useState<string[]>([]);
+	const [subCategories, setSubCategories] = useState<string[]>([]);
+	const [startPrice, setStartPrice] = useState<number>(0);
+	const [endPrice, setEndPrice] = useState<number>(10000);
 
-	const { data } = useGetAllQuery(
-		{
-			path: 'products',
-			limit: 99,
-			page: 1,
-			sort,
-			filters: { category_in: singleCategoryData?._id },
+	// Build category filter logic
+	const getCategoryFilter = () => {
+		// If subcategories are selected, use only those
+		if (subCategories?.length > 0) {
+			return subCategories.join(',');
+		}
+
+		// Start with the single category ID
+		const categoryIds = [singleCategoryData?._id];
+
+		// Add child categories if they exist and belong to this parent category
+		if (categoryData && categoryData?.totalDocs > 0 && categoryData?.doc?.length > 0) {
+			const childCategoryIds = categoryData.doc
+				.filter((cat: any) => cat.parentCategory?._id === singleCategoryData?._id)
+				.map((cat: any) => cat._id);
+			categoryIds.push(...childCategoryIds);
+		}
+
+		return categoryIds.filter(Boolean).join(',');
+	};
+
+	// Fetch filtered products
+	const { data, isLoading } = useGetAllQuery({
+		path: 'products',
+		limit: 200,
+		sort: sort,
+		filters: {
+			category_in: getCategoryFilter(),
+			colors_in: colors?.join(','),
+			sizes: sizes?.join(','),
+			price_btwn: `${startPrice}_${endPrice}`,
 		},
-		{ skip: !singleCategoryData?._id }
-	);
-
-	const categories = [...new Set(products?.map(p => p.category))];
-	const sizes = [...new Set(products?.flatMap(p => p.sizes))];
-	const colors = products?.map(p => p.color);
-
-	const prices = products.map(p => p.price);
-	const minPrice = Math.min(...prices);
-	const maxPrice = Math.max(...prices);
-	const numberOfRanges = 5;
-	const rangeSize = Math.ceil((maxPrice - minPrice) / numberOfRanges);
-	const priceRanges = Array.from({ length: numberOfRanges }, (_, i) => {
-		const start = minPrice + i * rangeSize;
-		const end = i === numberOfRanges - 1 ? maxPrice : start + rangeSize - 1;
-		return { min: start, max: end };
 	});
 
-	const handleMobileFilterOpen = () => {
-		setIsMobileFilterOpen(true);
-	};
-
-	const handleMobileFilterClose = () => {
-		setIsMobileFilterOpen(false);
-	};
+	// Determine which products to display
+	const displayProducts = data ? data?.doc : categoryProducts;
 
 	if (categoryProducts.length === 0) {
 		return (
@@ -89,7 +93,7 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 					value={sort}
 					onChange={(e: any) => setSort(e)}
 					categoryName={categoryName}
-					onFilterClick={handleMobileFilterOpen}
+					onFilterClick={() => setIsDrawerOpen(true)}
 				/>
 
 				<Grid
@@ -105,18 +109,24 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 						overflowY='auto'
 						display={{ base: 'none', md: 'block' }}>
 						<CategoryFilterSection
-							categories={categories}
 							colors={colors}
 							sizes={sizes}
-							priceRanges={priceRanges}
+							setColors={setColors}
+							setSizes={setSizes}
+							id={singleCategoryData?._id}
+							setSubCategories={setSubCategories}
+							selectedSubCategories={subCategories}
+							startPrice={startPrice}
+							endPrice={endPrice}
+							setStartPrice={setStartPrice}
+							setEndPrice={setEndPrice}
 						/>
 					</Box>
 
 					{/* Product Section */}
 					<Box
 						overflowY='auto'
-						h='100%'
-						>
+						h='100%'>
 						<Grid
 							templateColumns={{
 								base: 'repeat(2, 1fr)',
@@ -124,25 +134,72 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 								xl: 'repeat(3, 1fr)',
 							}}
 							gap={4}
-							w='full'
-						>
-							{categoryProducts?.map((product: any) => (
-								<ProductCard product={product} key={product.id} />
-							))}
+							w='full'>
+							{isLoading ? (
+								<Box>Loading...</Box>
+							) : (
+								displayProducts?.map((product: any) => (
+									<ProductCard
+										product={product}
+										key={product.id}
+									/>
+								))
+							)}
 						</Grid>
 					</Box>
 				</Grid>
 			</Flex>
 
-			{/* Mobile Filter Sidebar */}
-			<MobileFilterSidebar
-				isOpen={isMobileFilterOpen}
-				onClose={handleMobileFilterClose}
-				categories={categories}
-				colors={colors}
-				sizes={sizes}
-				priceRanges={priceRanges}
-			/>
+			{/* Mobile Filter Drawer */}
+			<Drawer.Root
+				open={isDrawerOpen}
+				onOpenChange={e => setIsDrawerOpen(e.open)}
+				placement='bottom'
+				size='full'>
+				<Portal>
+					<Drawer.Backdrop />
+					<Drawer.Positioner>
+						<Drawer.Content
+							roundedTop='xl'
+							maxH='90vh'>
+							<Drawer.Header
+								borderBottomWidth='1px'
+								borderColor='gray.200'>
+								<Drawer.Title>Filters</Drawer.Title>
+								<Drawer.CloseTrigger />
+							</Drawer.Header>
+							<Drawer.Body overflowY='auto'>
+								<CategoryFilterSection
+									colors={colors}
+									sizes={sizes}
+									setColors={setColors}
+									setSizes={setSizes}
+									id={singleCategoryData?._id}
+									setSubCategories={setSubCategories}
+									selectedSubCategories={subCategories}
+									startPrice={startPrice}
+									endPrice={endPrice}
+									setStartPrice={setStartPrice}
+									setEndPrice={setEndPrice}
+								/>
+							</Drawer.Body>
+							<Drawer.Footer
+								borderTopWidth='1px'
+								borderColor='gray.200'>
+								<Button
+									width='full'
+									colorScheme='black'
+									bg='black'
+									color='white'
+									_hover={{ bg: 'gray.800' }}
+									onClick={() => setIsDrawerOpen(false)}>
+									Apply Filters
+								</Button>
+							</Drawer.Footer>
+						</Drawer.Content>
+					</Drawer.Positioner>
+				</Portal>
+			</Drawer.Root>
 
 			<AdditionalInfo />
 		</PageLayout>
