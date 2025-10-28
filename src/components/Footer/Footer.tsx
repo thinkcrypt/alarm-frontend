@@ -14,6 +14,7 @@ import { footerLinksData, paymentMethods } from '../data/footerData';
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
 import CustomContainer from '../reusable/Container';
 import Link from 'next/link';
+import AlarmLogoDark from '../reusable/AlarmLogoDark';
 
 export interface SocialLink {
 	icon: React.ElementType;
@@ -44,13 +45,7 @@ const Footer: React.FC = () => {
 					gap={4}>
 					{/* Logo */}
 					<Link href='/'>
-						<Image
-							src='/ddong-logo.png'
-							alt='DDONG'
-							h='40px'
-							bgColor='white'
-							flexShrink={0}
-						/>
+						<AlarmLogoDark />
 					</Link>
 
 					{/* Newsletter Signup */}

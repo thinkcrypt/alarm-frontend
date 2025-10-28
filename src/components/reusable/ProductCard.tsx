@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 	return (
 		<Box
 			overflow='hidden'
-			bg={colors.cardBg}
+			bg="#e5e5e5"
 			// border='1px solid'
 			borderColor='gray.100'
 			borderRadius={'md'}>
@@ -155,7 +155,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 					trigger={
 						<PrimaryButton
 							variant='outline'
-							bgColor='#e4e7ee'
+							bgColor='white'
 							disabled={isInCart || product?.stock === 0}
 							w='full'
 							size={{ base: 'sm', lg: 'md' }}

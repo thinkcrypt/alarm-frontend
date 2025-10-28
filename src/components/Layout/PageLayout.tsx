@@ -26,7 +26,7 @@ const PageLayout: FC<PageLayoutProps> = ({
 	const categoryData = data?.doc;
 
 	return (
-		<Box backgroundColor={colors.bg}>
+		<Box >
 			<Header
 				categoryData={categoryData}
 				isLoading={isLoading}
