@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
+import { Roboto_Condensed } from 'next/font/google';
 import './globals.css';
 import { Provider } from '@/components/ui/provider';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-// import 'react-loading-skeleton/dist/skeleton.css'
-
 import { Toaster } from '@/components/ui/toaster';
 import ReduxProvider from '@/lib/providers/ReduxProvider';
 import Script from 'next/script';
+
+const robotoCondensed = Roboto_Condensed({
+	subsets: ['latin'],
+	weight: ['300', '400', '700'], // You can adjust these
+	display: 'swap',
+});
 
 export const metadata: Metadata = {
 	title: 'Alarm Lifestyle',
@@ -20,52 +25,50 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html
-			lang='en'
-			suppressHydrationWarning={true}>
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				{/* Google Tag Manager */}
 				<Script
-					id='gtm-script'
-					strategy='afterInteractive'
+					id="gtm-script"
+					strategy="afterInteractive"
 					dangerouslySetInnerHTML={{
 						__html: `
-							(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-							new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-							j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-							'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-							})(window,document,'script','dataLayer','GTM-NPC7ZL24');
-						`,
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-NPC7ZL24');
+            `,
 					}}
 				/>
 
 				{/* Meta Pixel Code */}
 				<Script
-					id='meta-pixel'
-					strategy='afterInteractive'
+					id="meta-pixel"
+					strategy="afterInteractive"
 					dangerouslySetInnerHTML={{
 						__html: `
-							!function(f,b,e,v,n,t,s)
-							{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-							n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-							if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-							n.queue=[];t=b.createElement(e);t.async=!0;
-							t.src=v;s=b.getElementsByTagName(e)[0];
-							s.parentNode.insertBefore(t,s)}(window, document,'script',
-							'https://connect.facebook.net/en_US/fbevents.js');
-							fbq('init', '662878156891694');
-							fbq('track', 'PageView');
-						`,
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '662878156891694');
+              fbq('track', 'PageView');
+            `,
 					}}
 				/>
 			</head>
-			<body>
+			<body className={robotoCondensed.className}>
 				{/* Google Tag Manager (noscript) */}
 				<noscript>
 					<iframe
-						src='https://www.googletagmanager.com/ns.html?id=GTM-NPC7ZL24'
-						height='0'
-						width='0'
+						src="https://www.googletagmanager.com/ns.html?id=GTM-NPC7ZL24"
+						height="0"
+						width="0"
 						style={{ display: 'none', visibility: 'hidden' }}
 					/>
 				</noscript>
@@ -73,14 +76,15 @@ export default function RootLayout({
 				{/* Meta Pixel (noscript) */}
 				<noscript>
 					<img
-						height='1'
-						width='1'
+						height="1"
+						width="1"
 						style={{ display: 'none' }}
-						src='https://www.facebook.com/tr?id=662878156891694&ev=PageView&noscript=1'
-						alt=''
+						src="https://www.facebook.com/tr?id=662878156891694&ev=PageView&noscript=1"
+						alt=""
 					/>
 				</noscript>
-				<Provider defaultTheme='light'>
+
+				<Provider defaultTheme="light">
 					<ReduxProvider>
 						{children}
 						<Toaster />
