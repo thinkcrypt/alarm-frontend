@@ -13,7 +13,6 @@ type PageLayoutProps = FlexProps & {
 };
 
 const PageLayout: FC<PageLayoutProps> = ({
-	// categoryData,
 	children,
 	...props
 }) => {
@@ -38,6 +37,9 @@ const PageLayout: FC<PageLayoutProps> = ({
 				w={'full'}
 				pt={{ base: '52px', md: '102px' }}
 				pb='0px'
+				px={0}
+				mx={0}
+				overflow='hidden'
 				{...props}>
 				{children}
 			</Flex>
