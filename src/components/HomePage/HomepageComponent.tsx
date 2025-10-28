@@ -52,10 +52,11 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 			{/* CategoryShowcase2 Section after first product section */}
 			<CategoryShowcase2 categoryData={categoryData} />
 
-			<CustomContainer>
+			<CustomContainer >
 				{/* Show remaining category product sections */}
 				{displayInHomeCategories?.slice(1).map((cat: any, idx: number) => (
 					<ProductSection
+
 						id={cat?._id}
 						key={idx}
 						title={cat.name}
@@ -66,7 +67,7 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 
 			<CategoryShowcase categoryData={categoryData} />
 
-			<CustomContainer pb={10}>
+			<CustomContainer>
 				<Flex
 					direction='column'
 					w='100%'

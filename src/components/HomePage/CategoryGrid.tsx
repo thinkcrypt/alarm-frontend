@@ -28,7 +28,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({ categoryData }) => {
 	return (
 		<CustomContainer>
 			<Box>
-				<SectionHeader2 title='Shop By Category' />
+				{/* <SectionHeader2 title='Shop By Category' /> */}
 				<Grid
 					templateColumns={{
 						base: 'repeat(2, 1fr)',

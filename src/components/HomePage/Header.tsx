@@ -206,7 +206,11 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 										onMouseEnter={() => setHoveredCategory(item.id)}
 										onMouseLeave={() => setHoveredCategory(null)}>
 										<NavLink href={`/category/${item.id}`}>
-											<Text fontWeight='bold' textTransform='uppercase'>
+											<Text 
+												fontWeight='bold' 
+												textTransform='uppercase'
+												_hover={{ color: '#FF4444' }}
+												transition='color 0.2s ease'>
 												{item.name}
 											</Text>
 										</NavLink>
@@ -256,8 +260,9 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 																		borderColor='gray.100'
 																		_hover={{
 																			bg: 'gray.50',
-																			color: 'blue.500',
+																			color: '#FF4444',
 																		}}
+																		transition='all 0.2s ease'
 																		_last={{ borderBottom: 'none' }}>
 																		{sub.label}
 																	</Text>

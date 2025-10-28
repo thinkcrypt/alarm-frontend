@@ -27,7 +27,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 		base: '250px',
 		md: '400px',
 		lg: '300px',
-		'2xl': '490px',
+
+		'xl': '490px',
 	});
 
 	const maxProducts = useBreakpointValue({
@@ -44,8 +45,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 			w='100%'
 			overflow='hidden'>
 			<Grid
-				templateColumns={{ base: '1fr', lg: '250px 1fr', '2xl': '400px 1fr' }}
-				gap={{ base: 4, md: 3 }}
+				templateColumns={{ base: '1fr', lg: '250px 1fr', 'xl': '400px 1fr' }}
+				gap={{ base: 4, md: 3, xl: 4 }}
 				alignItems='start'
 				w='100%'>
 				{/* Main Category Image */}
