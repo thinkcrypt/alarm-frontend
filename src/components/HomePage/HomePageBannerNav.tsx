@@ -69,7 +69,7 @@ const HomePageBannerNav: React.FC<HomePageBannerNavProps> = ({
     };
 
     return (
-        <Box bg="#e5e5e5" py={{ base: 3, md: 4 }}>
+        <Box bg="#F5F8F8" py={{ base: 3, md: 4 }}>
             {isLoading ? (
                 <Flex
                     justifyContent="space-between"
