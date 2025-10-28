@@ -24,7 +24,7 @@ const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({ categoryData }) => 
 		<CustomContainer>
 			<Grid
 				templateColumns={`repeat(${gridColumns}, 1fr)`}
-				gap={{ base: 2, md: 6 }}
+				gap={{ base: 2, md: 3 }}
 				w='100%'>
 				{homePageCategories?.slice(0, 4).map(category => (
 					<Link

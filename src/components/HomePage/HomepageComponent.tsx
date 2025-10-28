@@ -4,6 +4,7 @@ import CategoryGrid from './CategoryGrid';
 import ProductSection from './ProductSection';
 import BigDeals from './BigDeals';
 import CategoryShowcase from './CategoryShowcase';
+import CategoryShowcase2 from './CategoryShowcase2';
 import PageLayout from '../Layout/PageLayout';
 import PromotionalBanner from './PromotionalBanner';
 import CategorySection from '../reusable/CategorySection';
@@ -37,7 +38,23 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 			<CategoryGrid categoryData={categoryData} />
 
 			<CustomContainer>
-				{displayInHomeCategories?.map((cat: any, idx: number) => (
+				{/* Show first category product section */}
+				{displayInHomeCategories?.slice(0, 1).map((cat: any, idx: number) => (
+					<ProductSection
+						id={cat?._id}
+						key={idx}
+						title={cat.name}
+						products={productData?.filter((product: any) => product?.category?.name === cat.name)}
+					/>
+				))}
+			</CustomContainer>
+
+			{/* CategoryShowcase2 Section after first product section */}
+			<CategoryShowcase2 categoryData={categoryData} />
+
+			<CustomContainer>
+				{/* Show remaining category product sections */}
+				{displayInHomeCategories?.slice(1).map((cat: any, idx: number) => (
 					<ProductSection
 						id={cat?._id}
 						key={idx}
@@ -53,7 +70,8 @@ const HomepageComponent: FC<HomepageComponentProps> = ({ categoryData, productDa
 				<Flex
 					direction='column'
 					w='100%'
-					gap={8}>
+					h='100%'
+					gap={4}>
 					{featuredAndHomeCategories?.map((cat: any, idx: number) => (
 						<CategorySection
 							key={idx}

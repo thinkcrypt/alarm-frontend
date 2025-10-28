@@ -1,11 +1,11 @@
 export interface FooterSection {
-  title: string;
-  links: string[];
+	title: string;
+	links: string[];
 }
 
 export const footerLinksData = [
 	{
-		title: 'About DDong',
+		title: 'About Alarm',
 		links: [
 			{
 				name: 'Although today online brands have started to release our smartphone Hit. Management Hit Trial Copenhagen.',
@@ -58,17 +58,17 @@ export const footerLinksData = [
 
 
 export const socialLinks = [
-  { name: 'Facebook', icon: 'facebook' },
-  { name: 'Twitter', icon: 'twitter' },
-  { name: 'Instagram', icon: 'instagram' },
-  { name: 'LinkedIn', icon: 'linkedin' },
-  { name: 'YouTube', icon: 'youtube' }
+	{ name: 'Facebook', icon: 'facebook' },
+	{ name: 'Twitter', icon: 'twitter' },
+	{ name: 'Instagram', icon: 'instagram' },
+	{ name: 'LinkedIn', icon: 'linkedin' },
+	{ name: 'YouTube', icon: 'youtube' }
 ];
 
 export const paymentMethods = [
-  'visa', 'mastercard', 'amex', 'paypal', 'apple-pay', 'google-pay', 
-  'stripe', 'klarna', 'afterpay', 'shopify', 'amazon', 'target', 
-  'walmart', 'ebay', 'alibaba', 'rakuten', 'zalando', 'otto',
-  'myntra', 'flipkart', 'snapdeal', 'paytm', 'phonepe', 'gpay',
-  'bhim', 'mobikwik', 'freecharge', 'airtel', 'jio', 'vodafone'
+	'visa', 'mastercard', 'amex', 'paypal', 'apple-pay', 'google-pay',
+	'stripe', 'klarna', 'afterpay', 'shopify', 'amazon', 'target',
+	'walmart', 'ebay', 'alibaba', 'rakuten', 'zalando', 'otto',
+	'myntra', 'flipkart', 'snapdeal', 'paytm', 'phonepe', 'gpay',
+	'bhim', 'mobikwik', 'freecharge', 'airtel', 'jio', 'vodafone'
 ];

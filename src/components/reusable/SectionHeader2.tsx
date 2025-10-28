@@ -27,31 +27,34 @@ const SectionHeader2: React.FC<SectionHeader2Props> = ({
 				justify="center"
 				gap={4}
 				mb={{ base: 4, md: mb }}
+				mt={4}
 				w="100%"
 				cursor='pointer'
-				backgroundColor="#e5e5e5"
+				backgroundColor="#F5F8F8"
 			>
 				<Box
 					flex={1}
 					h="2px"
-					bg="gray"
-					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '300px' }}
+					bg="gray.300"
+					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '500px' }}
 				/>
 				<Text
 					fontSize={fontSize}
-					fontWeight='bold'
+					fontWeight={600}
 					color="black"
+					textTransform="uppercase"
 					textAlign="center"
 					whiteSpace="nowrap"
 					py={py}
+					px={{ base: 2, md: 8, lg: 12 }}
 				>
 					{title}
 				</Text>
 				<Box
 					flex={1}
 					h="2px"
-					bg="gray"
-					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '300px' }}
+					bg="gray.400"
+					maxW={{ base: '80px', md: '150px', lg: '250px', xl: '500px' }}
 				/>
 			</Flex>
 		</Link>

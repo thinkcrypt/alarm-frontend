@@ -3,10 +3,10 @@ import React from 'react';
 
 const AlarmLogo: React.FC = () => {
     return (
-        <Flex  align='center' gap={0} h='40px'>
+        <Flex align='center' gap={0} h='40px'>
             {/* "ala" text */}
             <Text
-                fontSize='32px'
+                fontSize={{ base: '26px', md: '32px' }}
                 fontWeight='bold'
                 color='black'
                 lineHeight='1'
@@ -23,8 +23,8 @@ const AlarmLogo: React.FC = () => {
                 alignItems='center'
             >
                 <svg
-                    width='28'
-                    height='28'
+                    width='24'
+                    height='24'
                     viewBox='0 0 28 28'
                     fill='none'
                     style={{ display: 'block' }}
@@ -65,7 +65,7 @@ const AlarmLogo: React.FC = () => {
 
             {/* "rm" text */}
             <Text
-                fontSize='32px'
+                fontSize={{ base: '26px', md: '32px' }}
                 fontWeight='bold'
                 color='black'
                 lineHeight='1'

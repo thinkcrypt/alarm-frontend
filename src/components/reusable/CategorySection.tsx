@@ -45,7 +45,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 			overflow='hidden'>
 			<Grid
 				templateColumns={{ base: '1fr', lg: '250px 1fr', '2xl': '400px 1fr' }}
-				gap={{ base: 4, md: 6 }}
+				gap={{ base: 4, md: 3 }}
 				alignItems='start'
 				w='100%'>
 				{/* Main Category Image */}
