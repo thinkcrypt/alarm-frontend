@@ -68,26 +68,23 @@ const CategoryFilterSection: FC<CategoryFilterSectionProps> = ({
 	};
 
 	return (
-		<VStack
-			alignItems='stretch'
-			gap={4}>
+		<VStack alignItems="stretch" gap={4}>
 			{/* Sub Categories Filter */}
 			{subCategoriesData?.doc && subCategoriesData.doc.length > 0 && (
 				<CategoryFilterSectionContainer>
 					<Text fontWeight={600} mb={3}>
 						Sub Categories
 					</Text>
-					<VStack
-						alignItems='stretch'
-						gap={3}>
+					<VStack alignItems="stretch" gap={3}>
 						{subCategoriesData.doc.map((item: any, index: number) => (
 							<Checkbox.Root
 								checked={selectedSubCategories.includes(item?._id)}
 								onCheckedChange={handleSubCategoryChange(item?._id)}
-								variant='solid'
+								variant="solid"
 								value={item?.name}
 								key={index}
-								size='sm'>
+								size="sm"
+							>
 								<Checkbox.HiddenInput />
 								<Checkbox.Control />
 								<Checkbox.Label>{item?.name}</Checkbox.Label>
@@ -103,17 +100,16 @@ const CategoryFilterSection: FC<CategoryFilterSectionProps> = ({
 					<Text fontWeight={600} mb={3}>
 						Colors
 					</Text>
-					<VStack
-						alignItems='stretch'
-						gap={3}>
+					<VStack alignItems="stretch" gap={3}>
 						{colorData.doc.map((item: any, i: number) => (
 							<Checkbox.Root
 								checked={colors.includes(item?.name)}
 								onCheckedChange={handleColorChange(item?.name)}
-								variant='solid'
+								variant="solid"
 								value={item?.name}
 								key={i}
-								size='sm'>
+								size="sm"
+							>
 								<Checkbox.HiddenInput />
 								<Checkbox.Control />
 								<Checkbox.Label>{item?.name}</Checkbox.Label>
@@ -129,17 +125,16 @@ const CategoryFilterSection: FC<CategoryFilterSectionProps> = ({
 					<Text fontWeight={600} mb={3}>
 						Sizes
 					</Text>
-					<VStack
-						alignItems='stretch'
-						gap={3}>
+					<VStack alignItems="stretch" gap={3}>
 						{sizeData.doc.map((item: any, index: number) => (
 							<Checkbox.Root
 								checked={sizes.includes(item?.name)}
 								onCheckedChange={handleSizeChange(item?.name)}
-								variant='solid'
+								variant="solid"
 								value={item?.name}
 								key={index}
-								size='sm'>
+								size="sm"
+							>
 								<Checkbox.HiddenInput />
 								<Checkbox.Control />
 								<Checkbox.Label>{item?.name}</Checkbox.Label>
@@ -155,11 +150,7 @@ const CategoryFilterSection: FC<CategoryFilterSectionProps> = ({
 					Price Range
 				</Text>
 
-				<HStack
-					pr={3}
-					justify='space-between'
-					fontSize='sm'
-					color='gray.600'>
+				<HStack pr={3} justify="space-between" fontSize="sm" color="gray.600">
 					<Text>৳{startPrice.toLocaleString()}</Text>
 					<Text>৳{endPrice.toLocaleString()}</Text>
 				</HStack>
@@ -169,38 +160,36 @@ const CategoryFilterSection: FC<CategoryFilterSectionProps> = ({
 					max={15000}
 					step={500}
 					value={[startPrice, endPrice]}
-					onValueChange={details => {
-						if (setStartPrice && setEndPrice) {
-							setStartPrice(details.value[0]);
-							setEndPrice(details.value[1]);
+					onValueChange={(details: any) => {
+						const values = details?.value as number[];
+						if (setStartPrice && setEndPrice && Array.isArray(values)) {
+							setStartPrice(values[0]);
+							setEndPrice(values[1]);
 						}
 					}}
 					minStepsBetweenThumbs={1}
-					pr={4}>
+					pr={4}
+				>
 					<Slider.Control>
-						<Slider.Track bg='gray.200'>
-							<Slider.Range bg='black' />
+						<Slider.Track bg="gray.200">
+							<Slider.Range bg="black" />
 						</Slider.Track>
 						<Slider.Thumb
 							index={0}
-							bg='white'
-							borderWidth='2px'
-							borderColor='black'
+							bg="white"
+							borderWidth="2px"
+							borderColor="black"
 						/>
 						<Slider.Thumb
 							index={1}
-							bg='white'
-							borderWidth='2px'
-							borderColor='black'
+							bg="white"
+							borderWidth="2px"
+							borderColor="black"
 						/>
 					</Slider.Control>
 				</Slider.Root>
 
-				<HStack
-					pr={3}
-					justify='space-between'
-					fontSize='xs'
-					color='gray.500'>
+				<HStack pr={3} justify="space-between" fontSize="xs" color="gray.500">
 					<Text>Min: ৳0</Text>
 					<Text>Max: ৳15,000</Text>
 				</HStack>

@@ -15,63 +15,68 @@ type Props = {
 };
 
 export default function AllProductsComponent({ allProducts }: Props) {
-	const categories = [...new Set(allProducts?.map((p: any) => p?.category?.name))];
+	const categories = [...new Set(allProducts?.map((p: any) => p?.category?.name))] as string[];
+
 	const allVariations = allProducts.flatMap((p: any) => p?.variations || []);
+
 	// Colors
 	const allColors = [
 		...new Set(
 			allVariations
 				.map((v: any) => {
-					const colorAttr = v.attributes.find((attr: any) => attr.label.toLowerCase() === 'color');
+					const colorAttr = v.attributes.find(
+						(attr: any) => attr.label.toLowerCase() === 'color'
+					);
 					if (colorAttr) return colorAttr.value;
 					const possibleColor = v.name.split('-')[1];
 					return possibleColor || null;
 				})
 				.filter(Boolean)
 		),
-	];
+	] as string[];
+
 	// Sizes
 	const commonSizes = [
 		...new Set(
 			allVariations
 				.map((v: any) => {
-					const sizeAttr = v.attributes.find((attr: any) => attr.label.toLowerCase() === 'size');
+					const sizeAttr = v.attributes.find(
+						(attr: any) => attr.label.toLowerCase() === 'size'
+					);
 					if (sizeAttr) return sizeAttr.value;
 					const possibleSize = v.name.split('-')[0];
 					return possibleSize || null;
 				})
 				.filter(Boolean)
 		),
-	];
+	] as string[];
 
 	const prices = allProducts?.map((p: any) => p.price);
 	const minPrice = Math.min(...prices);
 	const maxPrice = Math.max(...prices);
-	const numberOfRanges = 5;
-	const rangeSize = Math.ceil((maxPrice - minPrice) / numberOfRanges);
-	const priceRanges = Array.from({ length: numberOfRanges }, (_, i) => {
-		const start = minPrice + i * rangeSize;
-		const end = i === numberOfRanges - 1 ? maxPrice : start + rangeSize - 1;
-		return { min: start, max: end };
-	});
 
-	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+	// Filter states
+	const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
 	const [selectedColors, setSelectedColors] = useState<string[]>([]);
 	const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-	const [selectedPriceRange, setSelectedPriceRange] = useState<{ min: number; max: number } | null>(
-		null
-	);
+	const [startPrice, setStartPrice] = useState<number>(minPrice || 0);
+	const [endPrice, setEndPrice] = useState<number>(maxPrice || 10000);
 	const [sortType, setSortType] = useState<string | null>(null);
+	const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
+	// Filtering logic
 	const filteredProducts = useMemo(() => {
 		return allProducts.filter((product: any) => {
 			const categoryMatch =
-				selectedCategories.length === 0 || selectedCategories.includes(product.category?.name);
+				selectedSubCategories.length === 0 ||
+				selectedSubCategories.includes(product.category?.name);
 
 			const colorMatch =
 				selectedColors.length === 0 ||
 				product.variations.some((v: any) => {
-					const colorAttr = v.attributes.find((attr: any) => attr.label.toLowerCase() === 'color');
+					const colorAttr = v.attributes.find(
+						(attr: any) => attr.label.toLowerCase() === 'color'
+					);
 					const color = colorAttr ? colorAttr.value : v.name.split('-')[1];
 					return selectedColors.includes(color);
 				});
@@ -79,19 +84,20 @@ export default function AllProductsComponent({ allProducts }: Props) {
 			const sizeMatch =
 				selectedSizes.length === 0 ||
 				product.variations.some((v: any) => {
-					const sizeAttr = v.attributes.find((attr: any) => attr.label.toLowerCase() === 'size');
+					const sizeAttr = v.attributes.find(
+						(attr: any) => attr.label.toLowerCase() === 'size'
+					);
 					const size = sizeAttr ? sizeAttr.value : v.name.split('-')[0];
 					return selectedSizes.includes(size);
 				});
 
-			const priceMatch =
-				!selectedPriceRange ||
-				(product.price >= selectedPriceRange.min && product.price <= selectedPriceRange.max);
+			const priceMatch = product.price >= startPrice && product.price <= endPrice;
 
 			return categoryMatch && colorMatch && sizeMatch && priceMatch;
 		});
-	}, [allProducts, selectedCategories, selectedColors, selectedSizes, selectedPriceRange]);
+	}, [allProducts, selectedSubCategories, selectedColors, selectedSizes, startPrice, endPrice]);
 
+	// Sorting logic
 	const sortedProducts = useMemo(() => {
 		if (!sortType) return filteredProducts;
 
@@ -110,34 +116,19 @@ export default function AllProductsComponent({ allProducts }: Props) {
 		}
 	}, [filteredProducts, sortType]);
 
-	const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-	const handleMobileFilterOpen = () => {
-		setIsMobileFilterOpen(true);
-	};
-
-	const handleMobileFilterClose = () => {
-		setIsMobileFilterOpen(false);
-	};
+	const handleMobileFilterOpen = () => setIsMobileFilterOpen(true);
+	const handleMobileFilterClose = () => setIsMobileFilterOpen(false);
 
 	return (
 		<PageLayout categoryData={allProducts}>
-			{/* <SectionHeader2 title={"All Products"} /> */}
-			<Flex
-				direction={'column'}
-				w={'full'}
-				gap={4}
-				px={{ base: 4, md: 12 }}>
+			<Flex direction={'column'} w={'full'} gap={4} px={{ base: 4, md: 12 }}>
 				<HeaderGrid
 					categoryName={'All Products'}
 					onFilterClick={handleMobileFilterOpen}
 					onSortChange={setSortType}
 				/>
 
-				<Grid
-					pb={4}
-					templateColumns={{ base: '1fr', md: '300px 1fr' }}
-					gap={4}>
+				<Grid pb={4} templateColumns={{ base: '1fr', md: '300px 1fr' }} gap={4}>
 					{/* Desktop Filter Section */}
 					<Box
 						position='sticky'
@@ -145,30 +136,28 @@ export default function AllProductsComponent({ allProducts }: Props) {
 						h='fit-content'
 						maxH='100%'
 						overflowY='auto'
-						display={{ base: 'none', md: 'block' }}>
+						display={{ base: 'none', md: 'block' }}
+					>
 						<CategoryFilterSection
-							categories={categories}
-							colors={allColors}
-							sizes={commonSizes}
-							priceRanges={priceRanges}
-							onCategoryChange={setSelectedCategories}
-							onColorChange={setSelectedColors}
-							onSizeChange={setSelectedSizes}
-							onPriceRangeChange={setSelectedPriceRange}
+							id={'all-products'}
+							colors={selectedColors}
+							sizes={selectedSizes}
+							setColors={setSelectedColors}
+							setSizes={setSelectedSizes}
+							setSubCategories={setSelectedSubCategories}
+							selectedSubCategories={selectedSubCategories}
+							startPrice={startPrice}
+							endPrice={endPrice}
+							setStartPrice={setStartPrice}
+							setEndPrice={setEndPrice}
 						/>
 					</Box>
 
-					<Box
-						overflowY='auto'
-						h='100%'>
+					{/* Products Section */}
+					<Box overflowY='auto' h='100%'>
 						{sortedProducts.length < 1 ? (
-							<Flex
-								h={'100dvh'}
-								justifyContent={'center'}
-								alignItems={'center'}>
-								<Text
-									fontSize={30}
-									fontWeight={600}>
+							<Flex h={'100dvh'} justifyContent={'center'} alignItems={'center'}>
+								<Text fontSize={30} fontWeight={600}>
 									No Products Found.
 								</Text>
 							</Flex>
@@ -180,15 +169,11 @@ export default function AllProductsComponent({ allProducts }: Props) {
 									xl: 'repeat(4, 1fr)',
 								}}
 								gap={4}
-								w='full'>
+								w='full'
+							>
 								{sortedProducts?.map((product: any) => (
-									<Link
-										key={product.id}
-										href={`/category/${product.id}`}>
-										<ProductCard
-											key={product?.id}
-											product={product}
-										/>
+									<Link key={product.id} href={`/category/${product.id}`}>
+										<ProductCard key={product?.id} product={product} />
 									</Link>
 								))}
 							</Grid>
@@ -204,8 +189,9 @@ export default function AllProductsComponent({ allProducts }: Props) {
 				categories={categories}
 				colors={allColors}
 				sizes={commonSizes}
-				priceRanges={priceRanges}
+				priceRanges={[]}
 			/>
+
 			<AdditionalInfo />
 		</PageLayout>
 	);
