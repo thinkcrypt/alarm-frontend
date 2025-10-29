@@ -40,7 +40,7 @@ const SectionHeader2: React.FC<SectionHeader2Props> = ({
 				/>
 				<Text
 					fontSize={fontSize}
-					fontWeight={600}
+					fontWeight={500}
 					color="black"
 					textTransform="uppercase"
 					textAlign="center"
