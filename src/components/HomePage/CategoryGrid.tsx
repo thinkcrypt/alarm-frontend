@@ -5,6 +5,7 @@ import { Box, Container, Grid } from '@chakra-ui/react';
 import SectionHeader from '../reusable/SectionHeader';
 import CustomContainer from '../reusable/Container';
 import SectionHeader2 from '../reusable/SectionHeader2';
+import getASingleCategory from '@/lib/ssr/getASingleCategory';
 
 // JSON data for categories
 const categories = [
@@ -20,11 +21,9 @@ type CategoryGridProps = {
 	categoryData: any[];
 };
 
-const CategoryGrid: React.FC<CategoryGridProps> = ({ categoryData }) => {
-	const featuredCategories = categoryData?.filter(category => category.isFeatured);
-
-	// console.log('featuredCategories', featuredCategories);
-
+const CategoryGrid: React.FC<CategoryGridProps> = ({ categoryData }: any) => {
+	// const featuredCategories = categoryData?.filter(category => category.isFeatured);
+// console.log('featuredCategories', categoryData);
 	return (
 		<CustomContainer>
 			<Box>
@@ -35,22 +34,23 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({ categoryData }) => {
 						md: 'repeat(2, 1fr)',
 						lg: 'repeat(3, 1fr)',
 					}}
-					gap={{ base: 2, md: 4 }}>
-					{featuredCategories.slice(0, 6).map(category => (
-						<Link
-							key={category.id}
-							href={`/category/${category._id}`}
-							passHref>
-							<CategoryCard
-								image={category.image}
-								title={category.name}
-							/>
-						</Link>
+					gap={{ base: 2, md: 4 }}
+				>
+					{categoryData?.list?.slice(0, 6).map((category: any, i: number) => (
+						<CatItem key={i} id={category} />
 					))}
 				</Grid>
 			</Box>
 		</CustomContainer>
 	);
 };
-
+const CatItem = async ({ id }: { id: string }) => {
+	const category = await getASingleCategory(id);
+		// console.log('featuredCategories', category);
+	return (
+		<Link href={`/category/${category?._id}`} passHref>
+			<CategoryCard image={category?.image} title={category?.name} />
+		</Link>
+	);
+};
 export default CategoryGrid;
