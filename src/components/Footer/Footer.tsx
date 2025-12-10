@@ -31,21 +31,29 @@ export const socialLinks: SocialLink[] = [
 
 const Footer: React.FC = () => {
 	return (
-		<Box
-			bg='black'
-			py={10}
-			color='white'
-			w='100%'>
+		<Box bg='black' py={10} color='white' w='100%'>
 			<CustomContainer pt={0}>
 				{/* Top Section with Logo + Newsletter */}
 				<Flex
 					direction={{ base: 'column', md: 'row' }}
 					justify='space-between'
 					align={{ base: 'flex-start', md: 'center' }}
-					gap={4}>
+					gap={4}
+				>
 					{/* Logo */}
-					<Link href='/'>
-						<AlarmLogoDark />
+					<Link
+						href={'/'}
+						style={{ display: 'inline-block', marginBottom: '3px' }}
+					>
+						{/* <AlarmLogo /> */}
+						<Image
+							src={'logo-dark.png'}
+							alt={'alarm-logo'}
+							w='100%'
+							h='28px'
+							display={'block'}
+							objectFit='cover'
+						/>
 					</Link>
 
 					{/* Newsletter Signup */}
@@ -87,37 +95,33 @@ const Footer: React.FC = () => {
 				<Grid
 					py={8}
 					templateColumns={{ base: '1fr', md: 'repeat(4, 1fr)' }}
-					gap={8}>
+					gap={8}
+				>
 					{/* Hardcoded first section: About DDong + social icons */}
-					<VStack
-						align='flex-start'
-						gap={3}>
+					<VStack align='flex-start' gap={3}>
 						<Text
 							fontSize='14px'
 							fontWeight='bold'
 							color='white'
-							textTransform='uppercase'>
+							textTransform='uppercase'
+						>
 							About ALARM
 						</Text>
-						<Text
-							fontSize='12px'
-							color='gray.400'
-							lineHeight='1.4'>
-							Although today online brands have started to release our smartphone Hit. Management
-							Hit Trial Copenhagen.
+						<Text fontSize='12px' color='gray.400' lineHeight='1.4'>
+							Although today online brands have started to release our
+							smartphone Hit. Management Hit Trial Copenhagen.
 						</Text>
 						<Text
 							fontSize='12px'
 							color='gray.400'
 							lineHeight='1.4'
-							cursor='pointer'>
+							cursor='pointer'
+						>
 							Contact Us
 						</Text>
 
 						{/* Social Icons */}
-						<HStack
-							gap={2}
-							mt={2}>
+						<HStack gap={2} mt={2}>
 							{socialLinks?.map((social, index) => (
 								<CLink
 									href={social.href}
@@ -132,11 +136,9 @@ const Footer: React.FC = () => {
 									alignItems='center'
 									justifyContent='center'
 									cursor='pointer'
-									_hover={{ bg: 'gray.600' }}>
-									<Icon
-										as={social.icon}
-										color='white'
-									/>
+									_hover={{ bg: 'gray.600' }}
+								>
+									<Icon as={social.icon} color='white' />
 								</CLink>
 							))}
 						</HStack>
@@ -144,27 +146,24 @@ const Footer: React.FC = () => {
 
 					{/* Render the remaining footer link sections */}
 					{footerLinksData?.slice(1)?.map((section, index) => (
-						<VStack
-							key={index}
-							align='flex-start'
-							gap={3}>
+						<VStack key={index} align='flex-start' gap={3}>
 							<Text
 								fontSize='14px'
 								fontWeight='bold'
 								color='white'
-								textTransform='uppercase'>
+								textTransform='uppercase'
+							>
 								{section.title}
 							</Text>
 							{section?.links?.map((link, i) => (
-								<Link
-									href={link?.route}
-									key={i}>
+								<Link href={link?.route} key={i}>
 									<Text
 										fontSize='12px'
 										color='gray.400'
 										_hover={{ color: 'white', textDecoration: 'none' }}
 										cursor='pointer'
-										lineHeight='1.4'>
+										lineHeight='1.4'
+									>
 										{link?.name}
 									</Text>
 								</Link>
@@ -174,20 +173,10 @@ const Footer: React.FC = () => {
 				</Grid>
 
 				{/* Payment Methods and Copyright */}
-				<Box
-					borderTop='1px solid'
-					borderColor='gray.700'
-					py={6}
-					pb={2}>
-					<VStack
-						gap={4}
-						align='flex-start'>
-						<HStack
-							gap={4}
-							align='center'>
-							<Text
-								fontSize='12px'
-								color='gray.400'>
+				<Box borderTop='1px solid' borderColor='gray.700' py={6} pb={2}>
+					<VStack gap={4} align='flex-start'>
+						<HStack gap={4} align='center'>
+							<Text fontSize='12px' color='gray.400'>
 								© 2025. ALARM BD | All rights reserved.
 							</Text>
 						</HStack>
