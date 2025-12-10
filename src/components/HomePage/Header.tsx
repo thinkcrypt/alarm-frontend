@@ -41,7 +41,10 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 	const parents = categoryData
 		.filter(
 			cat =>
-				!cat.parentCategory && cat.displayInMenu === true && cat.isActive === true && !cat.isDeleted
+				!cat.parentCategory &&
+				cat.displayInMenu === true &&
+				cat.isActive === true &&
+				!cat.isDeleted
 		)
 		.map(parent => {
 			const children = categoryData.filter(
@@ -65,7 +68,10 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 		});
 
 	const { cartItems } = useAppSelector(state => state.cart);
-	const totalItems = cartItems.reduce((sum: number, it: any) => sum + (it.qty || 0), 0);
+	const totalItems = cartItems.reduce(
+		(sum: number, it: any) => sum + (it.qty || 0),
+		0
+	);
 
 	const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
@@ -86,7 +92,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 			top={0}
 			left={0}
 			w='100%'
-			zIndex={1000}>
+			zIndex={1000}
+		>
 			<Box display={{ base: 'none', md: 'block' }}>
 				<TopHeader />
 			</Box>
@@ -99,27 +106,37 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 					justify='space-between'
 					align='center'
 					w='100%'
-					px={{ base: 1, md: 3, lg: 3, xl: 0 }}>
+					px={{ base: 1, md: 3, lg: 3, xl: 0 }}
+				>
 					{/* Left Side - Menu & Logo */}
 					<Flex align='center' gap={{ base: 2, md: 3, lg: 4 }}>
 						<Box display='flex' alignItems='center'>
 							<MobileNav parentCategories={parents} />
 						</Box>
 						<Box display='flex' alignItems='center'>
-							<Link href={'/'}>
-								<AlarmLogo />
+							<Link href={'/'} style={{ display: 'inline-block', marginBottom:'3px' }}>
+								{/* <AlarmLogo /> */}
+								<Image
+									src={'logo.png'}
+									alt={'alarm-logo'}
+									w='100%'
+									h='22px'
+									display={'block'}
+									objectFit='cover'
+								/>
 							</Link>
 						</Box>
 					</Flex>
 
 					{/* Right Side - Icons */}
-					<HStack gap={{ base: 0, md: 1 }} >
+					<HStack gap={{ base: 0, md: 1 }}>
 						<Link href={'/search'}>
 							<IconButton
 								variant='ghost'
 								aria-label='Search'
 								size={{ base: 'md', md: 'lg' }}
-								fontSize={{ base: '20px', md: '22px' }}>
+								fontSize={{ base: '20px', md: '22px' }}
+							>
 								<LuSearch />
 							</IconButton>
 						</Link>
@@ -130,7 +147,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									variant='ghost'
 									aria-label='Cart'
 									size={{ base: 'md', md: 'lg' }}
-									fontSize={{ base: '20px', md: '22px' }}>
+									fontSize={{ base: '20px', md: '22px' }}
+								>
 									<HiOutlineShoppingBag />
 								</IconButton>
 							</Link>
@@ -147,7 +165,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									h='20px'
 									display='flex'
 									alignItems='center'
-									justifyContent='center'>
+									justifyContent='center'
+								>
 									{totalItems}
 								</Badge>
 							)}
@@ -166,7 +185,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 								variant='ghost'
 								aria-label='Account'
 								size={{ base: 'md', md: 'lg' }}
-								fontSize={{ base: '20px', md: '22px' }}>
+								fontSize={{ base: '20px', md: '22px' }}
+							>
 								<LuUser />
 							</IconButton>
 						</Link>
@@ -181,11 +201,23 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 					alignItems='center'
 					gap={4}
 					w='100%'
-					px={{ xl: 7, '2xl': 20 }}>
+					px={{ xl: 7, '2xl': 20 }}
+				>
 					{/* Left Side - Logo */}
 					<Box justifySelf='start'>
 						<Link href={'/'}>
-							<AlarmLogo />
+							{/* <AlarmLogo /> */}
+
+							<Image
+								src={'logo.png'}
+								alt={'alarm-logo'}
+								w='100%'
+								h='28px'
+								display={'block'}
+								objectFit='cover'
+							/>
+
+							{/* <img src='logo.png' alt='alarm-logo' /> */}
 						</Link>
 					</Box>
 
@@ -194,7 +226,12 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 						{isLoading ? (
 							<HStack gap={8}>
 								{Array.from({ length: 7 }).map((_, idx) => (
-									<Skeleton key={idx} height='20px' width='80px' borderRadius='md' />
+									<Skeleton
+										key={idx}
+										height='20px'
+										width='80px'
+										borderRadius='md'
+									/>
 								))}
 							</HStack>
 						) : (
@@ -204,13 +241,15 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 										key={item.id}
 										position='relative'
 										onMouseEnter={() => setHoveredCategory(item.id)}
-										onMouseLeave={() => setHoveredCategory(null)}>
+										onMouseLeave={() => setHoveredCategory(null)}
+									>
 										<NavLink href={`/category/${item.id}`}>
-											<Text 
-												fontWeight='bold' 
+											<Text
+												fontWeight='bold'
 												textTransform='uppercase'
 												_hover={{ color: '#FF4444' }}
-												transition='color 0.2s ease'>
+												transition='color 0.2s ease'
+											>
 												{item.name}
 											</Text>
 										</NavLink>
@@ -241,35 +280,44 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 												zIndex={99}
 												transition='opacity 0.2s ease'
 												opacity={hoveredCategory === item.id ? 1 : 0}
-												visibility={hoveredCategory === item.id ? 'visible' : 'hidden'}
-												pointerEvents={hoveredCategory === item.id ? 'auto' : 'none'}>
+												visibility={
+													hoveredCategory === item.id ? 'visible' : 'hidden'
+												}
+												pointerEvents={
+													hoveredCategory === item.id ? 'auto' : 'none'
+												}
+											>
 												<Grid
 													templateColumns={`repeat(${Math.ceil(
 														(item.childCategories?.length || 0) / 5
-													)}, 1fr) ${item.image ? '180px' : ''}`}>
-													{chunkArray(item.childCategories || [], 5).map((chunk, colIdx) => (
-														<Box key={colIdx}>
-															{chunk?.map((sub: any) => (
-																<Link key={sub.id} href={sub.href}>
-																	<Text
-																		w='180px'
-																		px={6}
-																		py={2}
-																		fontSize='sm'
-																		borderBottom='1px solid'
-																		borderColor='gray.100'
-																		_hover={{
-																			bg: 'gray.50',
-																			color: '#FF4444',
-																		}}
-																		transition='all 0.2s ease'
-																		_last={{ borderBottom: 'none' }}>
-																		{sub.label}
-																	</Text>
-																</Link>
-															))}
-														</Box>
-													))}
+													)}, 1fr) ${item.image ? '180px' : ''}`}
+												>
+													{chunkArray(item.childCategories || [], 5).map(
+														(chunk, colIdx) => (
+															<Box key={colIdx}>
+																{chunk?.map((sub: any) => (
+																	<Link key={sub.id} href={sub.href}>
+																		<Text
+																			w='180px'
+																			px={6}
+																			py={2}
+																			fontSize='sm'
+																			borderBottom='1px solid'
+																			borderColor='gray.100'
+																			_hover={{
+																				bg: 'gray.50',
+																				color: '#FF4444',
+																			}}
+																			transition='all 0.2s ease'
+																			_last={{ borderBottom: 'none' }}
+																		>
+																			{sub.label}
+																		</Text>
+																	</Link>
+																))}
+															</Box>
+														)
+													)}
 													{item.image && (
 														<Box w='180px' h='186px' overflow='hidden'>
 															<Image
@@ -313,7 +361,8 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 									h='20px'
 									display='flex'
 									alignItems='center'
-									justifyContent='center'>
+									justifyContent='center'
+								>
 									{totalItems}
 								</Badge>
 							)}
