@@ -20,6 +20,8 @@ import { addToCart as addToCartAction } from '@/store/slices/cartSlice';
 import { addToNowCart } from '@/store/slices/buyNowSlice';
 import { useRouter } from 'next/navigation';
 import SizeGuideModal from './SizeGuideModal';
+import { trackAddToCart } from '@/hooks/metaEvents';
+import BulkDiscountModal from './BulkDiscountModal';
 
 type GridRightPartProps = {
 	product: any;
@@ -46,22 +48,32 @@ const GridRightPart: FC<GridRightPartProps> = ({
 
 	// Primary Method: Extract from variations if they exist
 	if (product?.variations && product.variations.length > 0) {
-		const sizeValues = product.variations.reduce((acc: string[], variation: any) => {
-			const sizeAttr = variation.attributes?.find((attr: any) => attr.label === 'size');
-			if (sizeAttr?.value && !acc.includes(sizeAttr.value)) {
-				acc.push(sizeAttr.value);
-			}
-			return acc;
-		}, []);
+		const sizeValues = product.variations.reduce(
+			(acc: string[], variation: any) => {
+				const sizeAttr = variation.attributes?.find(
+					(attr: any) => attr.label === 'size'
+				);
+				if (sizeAttr?.value && !acc.includes(sizeAttr.value)) {
+					acc.push(sizeAttr.value);
+				}
+				return acc;
+			},
+			[]
+		);
 		availableSizes = sizeValues;
 
-		const colorValues = product.variations.reduce((acc: string[], variation: any) => {
-			const colorAttr = variation.attributes?.find((attr: any) => attr.label === 'color');
-			if (colorAttr?.value && !acc.includes(colorAttr.value)) {
-				acc.push(colorAttr.value);
-			}
-			return acc;
-		}, []);
+		const colorValues = product.variations.reduce(
+			(acc: string[], variation: any) => {
+				const colorAttr = variation.attributes?.find(
+					(attr: any) => attr.label === 'color'
+				);
+				if (colorAttr?.value && !acc.includes(colorAttr.value)) {
+					acc.push(colorAttr.value);
+				}
+				return acc;
+			},
+			[]
+		);
 		availableColors = colorValues;
 	}
 	// Fallback Method: Use pre-computed arrays if variations don't exist
@@ -76,18 +88,28 @@ const GridRightPart: FC<GridRightPartProps> = ({
 		availableSizes = product.customAttributes
 			.filter((attr: any) => attr.label === 'size')
 			.map((attr: any) => attr.value)
-			.filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
+			.filter(
+				(value: string, index: number, self: string[]) =>
+					self.indexOf(value) === index
+			);
 
 		availableColors = product.customAttributes
 			.filter((attr: any) => attr.label === 'color')
 			.map((attr: any) => attr.value)
-			.filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
+			.filter(
+				(value: string, index: number, self: string[]) =>
+					self.indexOf(value) === index
+			);
 	}
 
 	// Get current variation based on selected size and color
 	const currentVariation = product?.variations?.find((variation: any) => {
-		const sizeAttr = variation.attributes?.find((attr: any) => attr.label === 'size');
-		const colorAttr = variation.attributes?.find((attr: any) => attr.label === 'color');
+		const sizeAttr = variation.attributes?.find(
+			(attr: any) => attr.label === 'size'
+		);
+		const colorAttr = variation.attributes?.find(
+			(attr: any) => attr.label === 'color'
+		);
 
 		return (
 			(!selectedSize || sizeAttr?.value === selectedSize) &&
@@ -104,15 +126,37 @@ const GridRightPart: FC<GridRightPartProps> = ({
 	const productId = product?.id || product?._id;
 	const baseId = productId;
 	const variationPart =
-		currentVariation?._id || `${selectedSize || 'no-size'}-${selectedColor || 'no-color'}`;
+		currentVariation?._id ||
+		`${selectedSize || 'no-size'}-${selectedColor || 'no-color'}`;
 	const currentUniqueId = `${baseId}-${variationPart}`;
-	const isInCart = cartItems.some((item: any) => item.uniqueId === currentUniqueId);
-
-	// Calculate discount percentage if applicable
-	const discountPercentage =
-		product?.isDiscount && product.discount > 0
-			? Math.round(((product.cost - product.price) / product.cost) * 100)
-			: product?.discount || 0;
+	const isInCart = cartItems.some(
+		(item: any) => item.uniqueId === currentUniqueId
+	);
+	/////////////////// discount calculations
+	const discountType = product?.discountType || 'percentage';
+	const discountValue = Number(product?.discount) || 0;
+	const hasDiscount = product?.isDiscount && discountValue > 0;
+	const getDiscountBasePrice = (price: number, cost: number) => {
+		const priceNum = Number(price);
+		const costNum = Number(cost);
+		return priceNum > 0 ? priceNum : costNum;
+	};
+	const basePriceForDisplay = getDiscountBasePrice(
+		currentVariation?.price || product?.price,
+		currentVariation?.cost || product?.price
+	);
+	// calculate discount
+	const calcDiscountedPrice = (basePrice: any) => {
+		if (!hasDiscount) return basePrice;
+		if (discountType === 'flat') {
+			const discountVal = basePrice - discountValue;
+			return Math.max(0, discountVal);
+		}
+		//type percentage
+		const discounted = basePrice - basePrice * (discountValue / 100);
+		return Math.max(0, Math.round(discounted));
+	};
+	const discountedPriceForDisplay = calcDiscountedPrice(basePriceForDisplay);
 
 	// Helper function to determine if buttons should be disabled
 	const isButtonDisabled = () => {
@@ -120,7 +164,12 @@ const GridRightPart: FC<GridRightPartProps> = ({
 		if (!product?.variations || product.variations.length === 0) return true;
 
 		// If product has variations but no valid variant is selected
-		if (product?.variations && product.variations.length > 0 && !currentVariation) return true;
+		if (
+			product?.variations &&
+			product.variations.length > 0 &&
+			!currentVariation
+		)
+			return true;
 
 		// If sizes are available but none selected
 		if (availableSizes.length > 0 && !selectedSize) return true;
@@ -163,7 +212,11 @@ const GridRightPart: FC<GridRightPartProps> = ({
 		}
 
 		// Check if variants exist but no variant is selected
-		if (product?.variations && product.variations.length > 0 && !currentVariation) {
+		if (
+			product?.variations &&
+			product.variations.length > 0 &&
+			!currentVariation
+		) {
 			toaster.create({
 				title: 'Please select a valid size and color combination',
 				type: 'error',
@@ -179,8 +232,18 @@ const GridRightPart: FC<GridRightPartProps> = ({
 			});
 			return;
 		}
+		// base price for cart
+		const basePriceForCart = getDiscountBasePrice(
+			currentVariation?.price || product?.price,
+			currentVariation?.cost || product?.cost
+		);
+		// discounted price for cart
+		const discountPriceForCart = calcDiscountedPrice(basePriceForCart);
 
-		const primaryImage = currentVariation?.images?.[0]?.[0] || product.image || product.images?.[0];
+		const primaryImage =
+			currentVariation?.images?.[0]?.[0] ||
+			product.image ||
+			product.images?.[0];
 
 		// Generate variant name for cart display
 		const variantName =
@@ -198,7 +261,10 @@ const GridRightPart: FC<GridRightPartProps> = ({
 			_id: String(productId),
 			id: productId,
 			name: product.name,
-			price: currentVariation?.price || product.price,
+			price: discountPriceForCart,
+			// price: currentVariation?.price || product.price,
+			bulkDiscounts: product?.bulkDiscounts || [],
+			basePrice: product.price,
 			vat: product.vat || 0,
 			image: primaryImage,
 			selectedSize,
@@ -209,6 +275,15 @@ const GridRightPart: FC<GridRightPartProps> = ({
 			variantName,
 		};
 		dispatch(addToCartAction({ item, qty: 1 }));
+
+		trackAddToCart({
+			id: productId,
+			name: product.name + (variantName ? ` - ${variantName}` : ''),
+			price: discountPriceForCart,
+			// price: product.price,
+			quantity: 1,
+		});
+
 		toaster.create({
 			title: `${product.name} has been added to your cart`,
 			type: 'success',
@@ -244,7 +319,11 @@ const GridRightPart: FC<GridRightPartProps> = ({
 		}
 
 		// Check if variants exist but no variant is selected
-		if (product?.variations && product.variations.length > 0 && !currentVariation) {
+		if (
+			product?.variations &&
+			product.variations.length > 0 &&
+			!currentVariation
+		) {
 			toaster.create({
 				title: 'Please select a valid size and color combination',
 				type: 'error',
@@ -260,8 +339,17 @@ const GridRightPart: FC<GridRightPartProps> = ({
 			});
 			return;
 		}
-
-		const primaryImage = currentVariation?.images?.[0]?.[0] || product.image || product.images?.[0];
+		// base price for cart
+		const basePriceForCart = getDiscountBasePrice(
+			currentVariation?.price || product?.price,
+			currentVariation?.cost || product?.cost
+		);
+		// discounted price for cart
+		const discountPriceForCart = calcDiscountedPrice(basePriceForCart);
+		const primaryImage =
+			currentVariation?.images?.[0]?.[0] ||
+			product.image ||
+			product.images?.[0];
 
 		// Generate variant name for cart display
 		const variantName =
@@ -279,7 +367,9 @@ const GridRightPart: FC<GridRightPartProps> = ({
 			_id: String(productId),
 			id: productId,
 			name: product.name,
-			price: currentVariation?.price || product.price,
+			price: discountPriceForCart,
+			bulkDiscounts: product?.bulkDiscounts || [],
+			basePrice: product.price,
 			vat: product.vat || 0,
 			image: primaryImage,
 			selectedSize,
@@ -297,36 +387,34 @@ const GridRightPart: FC<GridRightPartProps> = ({
 		});
 	};
 
-	console.log('product', product);
-
 	return (
 		<GridItem>
-			<VStack
-				align='start'
-				gap={4}
-				pt={8}>
+			<VStack align='start' gap={4} pt={8}>
 				{/* Debug Info - Remove in production */}
 				{process.env.NODE_ENV === 'development' && (
-					<Box
-						p={2}
-						bg='gray.100'
-						fontSize='xs'
-						borderRadius='md'>
+					<Box p={2} bg='gray.100' fontSize='xs' borderRadius='md'>
 						<Text>
-							Debug: Sizes ({availableSizes.length}): {availableSizes.join(', ')}
+							Debug: Sizes ({availableSizes.length}):{' '}
+							{availableSizes.join(', ')}
 						</Text>
 						<Text>
-							Debug: Colors ({availableColors.length}): {availableColors.join(', ')}
+							Debug: Colors ({availableColors.length}):{' '}
+							{availableColors.join(', ')}
 						</Text>
 						<Text>Debug: Variations: {product?.variations?.length || 0}</Text>
 						<Text>
 							Debug: Current Selection: {selectedSize?.toUpperCase()}
-							{selectedColor ? ` / ${selectedColor}` : ''} (Stock: {currentStock})
+							{selectedColor ? ` / ${selectedColor}` : ''} (Stock:{' '}
+							{currentStock})
 						</Text>
-						{currentVariation && <Text>Debug: Current Variation ID: {currentVariation._id}</Text>}
+						{currentVariation && (
+							<Text>Debug: Current Variation ID: {currentVariation._id}</Text>
+						)}
 						<Text color={isButtonDisabled() ? 'red.500' : 'green.500'}>
 							Debug: Buttons {isButtonDisabled() ? 'DISABLED' : 'ENABLED'}
-							{!product?.variations || product.variations.length === 0 ? ' (No variations)' : ''}
+							{!product?.variations || product.variations.length === 0
+								? ' (No variations)'
+								: ''}
 							{isInCart && ' (Already in cart)'}
 						</Text>
 					</Box>
@@ -334,25 +422,36 @@ const GridRightPart: FC<GridRightPartProps> = ({
 
 				{/* Star Rating */}
 				<HStack>
-					{[1, 2, 3, 4, 5].map(i =>
-						i <= 4 ? (
-							<AiFillStar
-								key={i}
-								color='gold'
-								size={20}
-							/>
-						) : (
-							<AiOutlineStar
-								key={i}
-								color='gold'
-								size={20}
-							/>
-						)
-					)}
-					<Text
-						fontSize='sm'
-						color='gray.500'>
-						(0 customer reviews)
+					{[1, 2, 3, 4, 5].map(i => {
+						const rating = Number(product?.rating || 0); // average rating like 3.7
+						const fill = Math.min(Math.max(rating - (i - 1), 0), 1);
+						// fill is 1 (full), between 0-1 (partial), or 0 (empty)
+
+						return (
+							<Box key={i} position='relative' boxSize='20px'>
+								{/* empty star base */}
+								<AiOutlineStar color='gold' size={20} />
+
+								{/* filled part overlay (only if needed) */}
+								{fill > 0 && (
+									<Box
+										position='absolute'
+										top='0'
+										left='0'
+										width={`${fill * 100}%`}
+										height='100%'
+										overflow='hidden'
+									>
+										<AiFillStar color='gold' size={20} />
+									</Box>
+								)}
+							</Box>
+						);
+					})}
+					<Text fontSize='sm' color='gray.500'>
+						{product?.ratingCount > 0
+							? `(${product?.ratingCount} customer reviews)`
+							: '(0 customer reviews)'}
 					</Text>
 				</HStack>
 
@@ -360,30 +459,30 @@ const GridRightPart: FC<GridRightPartProps> = ({
 
 				{/* Price */}
 				<HStack>
-					<Text
-						fontSize='2xl'
-						fontWeight='800'>
-						৳ {(currentVariation?.price || product?.price)?.toLocaleString()}
+					<Text fontSize='2xl' fontWeight='800'>
+						৳ {discountedPriceForDisplay.toLocaleString()}
 					</Text>
-					{(currentVariation?.cost || product?.cost) >
-						(currentVariation?.price || product?.price) && (
+
+					{hasDiscount && discountedPriceForDisplay < basePriceForDisplay && (
 						<>
-							<Text
-								as='s'
-								color='red.400'
-								fontSize='lg'>
-								৳ {(currentVariation?.cost || product?.cost)?.toLocaleString()}
+							<Text as='s' color='red.400' fontSize='lg'>
+								৳ {basePriceForDisplay.toLocaleString()}
 							</Text>
-							<Badge colorScheme='green'>{discountPercentage}% OFF</Badge>
+							{/* percentage type */}
+							{discountType === 'percentage' && (
+								<Badge colorScheme='green'>{product?.discount}% OFF</Badge>
+							)}
+							{/* flat type */}
+							{discountType === 'flat' && (
+								<Badge colorScheme='green'>৳{product?.discount} OFF</Badge>
+							)}
 						</>
 					)}
 				</HStack>
 
 				{/* Color Selection */}
 				{availableColors.length > 0 ? (
-					<VStack
-						align='start'
-						gap={2}>
+					<VStack align='start' gap={2}>
 						<Text fontWeight='medium'>
 							Select Color: {selectedColor && <strong>{selectedColor}</strong>}
 						</Text>
@@ -395,27 +494,25 @@ const GridRightPart: FC<GridRightPartProps> = ({
 									variant={selectedColor === color ? 'solid' : 'outline'}
 									onClick={() => setSelectedColor?.(color)}
 									border={'1px solid #000'}
-									textTransform='capitalize'>
+									textTransform='capitalize'
+								>
 									{color}
 								</Button>
 							))}
 						</HStack>
 					</VStack>
 				) : (
-					<Text
-						fontSize='sm'
-						color='gray.500'>
+					<Text fontSize='sm' color='gray.500'>
 						No colors available
 					</Text>
 				)}
 
 				{/* Size Selection */}
 				{availableSizes.length > 0 ? (
-					<VStack
-						align='start'
-						gap={2}>
+					<VStack align='start' gap={2}>
 						<Text fontWeight='medium'>
-							Select Size: {selectedSize && <strong>{selectedSize.toUpperCase()}</strong>}
+							Select Size:{' '}
+							{selectedSize && <strong>{selectedSize.toUpperCase()}</strong>}
 						</Text>
 						<HStack>
 							{availableSizes.map((size: string) => (
@@ -425,16 +522,15 @@ const GridRightPart: FC<GridRightPartProps> = ({
 									variant={selectedSize === size ? 'solid' : 'outline'}
 									onClick={() => setSelectedSize(size)}
 									border={'1px solid #000'}
-									textTransform='uppercase'>
+									textTransform='uppercase'
+								>
 									{size}
 								</Button>
 							))}
 						</HStack>
 					</VStack>
 				) : (
-					<Text
-						fontSize='sm'
-						color='gray.500'>
+					<Text fontSize='sm' color='gray.500'>
 						No sizes available
 					</Text>
 				)}
@@ -444,28 +540,37 @@ const GridRightPart: FC<GridRightPartProps> = ({
 					<HStack>
 						<Text
 							fontSize='sm'
-							color={currentStock > 0 ? 'green.500' : 'red.500'}>
+							color={currentStock > 0 ? 'green.500' : 'red.500'}
+						>
 							{currentStock > 0
 								? `${currentStock} in stock${
 										selectedSize && selectedColor
 											? ` (${selectedSize.toUpperCase()} / ${
-													selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1)
+													selectedColor.charAt(0).toUpperCase() +
+													selectedColor.slice(1)
 											  })`
 											: selectedSize
 											? ` (${selectedSize.toUpperCase()})`
 											: selectedColor
-											? ` (${selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1)})`
+											? ` (${
+													selectedColor.charAt(0).toUpperCase() +
+													selectedColor.slice(1)
+											  })`
 											: ''
 								  }`
 								: `Out of stock${
 										selectedSize && selectedColor
 											? ` (${selectedSize.toUpperCase()} / ${
-													selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1)
+													selectedColor.charAt(0).toUpperCase() +
+													selectedColor.slice(1)
 											  })`
 											: selectedSize
 											? ` (${selectedSize.toUpperCase()})`
 											: selectedColor
-											? ` (${selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1)})`
+											? ` (${
+													selectedColor.charAt(0).toUpperCase() +
+													selectedColor.slice(1)
+											  })`
 											: ''
 								  }`}
 						</Text>
@@ -478,53 +583,49 @@ const GridRightPart: FC<GridRightPartProps> = ({
 						variant='outline'
 						border={'1px solid #000'}
 						onClick={handleAddToCart}
-						disabled={isInCart || isButtonDisabled()}>
+						disabled={isInCart || isButtonDisabled()}
+					>
 						{isInCart ? 'Added to Cart' : 'Add To Cart'}
 					</Button>
 					<Button
 						colorScheme='blackAlpha'
 						onClick={handleBuyNow}
-						disabled={isButtonDisabled()}>
+						disabled={isButtonDisabled()}
+					>
 						Shop Now
 					</Button>
 				</HStack>
 
 				{/* Product Details */}
-				<Text
-					fontSize='sm'
-					color='gray.500'>
+				<Text fontSize='sm' color='gray.500'>
 					SKU: {product?.sku}
 				</Text>
-				<Text
-					fontSize='sm'
-					color='gray.500'>
+				<Text fontSize='sm' color='gray.500'>
 					Category: {product?.category?.name}
 				</Text>
 				{product?.weight > 0 && (
-					<Text
-						fontSize='sm'
-						color='gray.500'>
+					<Text fontSize='sm' color='gray.500'>
 						Weight: {product?.weight}kg
 					</Text>
 				)}
 
-				{product?.sizeChart && <SizeGuideModal product={product} />}
+				{/* {product?.sizeChart && <SizeGuideModal product={product} />} */}
+				<HStack gap={4} flexWrap='wrap'>
+					{product?.sizeChart && <SizeGuideModal product={product} />}
+					{product?.bulkDiscounts?.length > 0 && (
+						<BulkDiscountModal product={product} />
+					)}
+				</HStack>
 
 				{/* Social Share */}
 				<HStack gap={3}>
-					<IconButton
-						aria-label='Share on Facebook'
-						size='sm'>
+					<IconButton aria-label='Share on Facebook' size='sm'>
 						<FaFacebookF />
 					</IconButton>
-					<IconButton
-						aria-label='Share on Twitter'
-						size='sm'>
+					<IconButton aria-label='Share on Twitter' size='sm'>
 						<FaTwitter />
 					</IconButton>
-					<IconButton
-						aria-label='Share on Instagram'
-						size='sm'>
+					<IconButton aria-label='Share on Instagram' size='sm'>
 						<FaInstagram />
 					</IconButton>
 				</HStack>
