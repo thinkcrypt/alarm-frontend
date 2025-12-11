@@ -16,7 +16,7 @@ export async function generateMetadata(
 	const previousImages = (await parent).openGraph?.images || [];
 
 	return {
-		title: `${metaData?.title || singleCategoryData?.name} | DDONG`,
+		title: `${metaData?.title || singleCategoryData?.name} | Alarm`,
 		description: metaData?.description || singleCategoryData?.description,
 		openGraph: {
 			title: metaData?.title || singleCategoryData?.name,
@@ -24,8 +24,8 @@ export async function generateMetadata(
 			images: [singleCategoryData?.image, ...previousImages],
 			type: 'website',
 			locale: 'en-us',
-			url: `https://ddongbd.com`,
-			siteName: `DDONG`,
+			url: `https://alarm-frontend-omega.vercel.app`,
+			siteName: `Alarm`,
 		},
 	};
 }

@@ -35,7 +35,7 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 	categoryData,
 }) => {
 	const categoryName = singleCategoryData?.name;
-	console.log('single category data:', singleCategoryData);
+	// console.log('single category data:', singleCategoryData);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const [sort, setSort] = useState('-createdAt');
@@ -103,7 +103,7 @@ const CategoryPageComponent: FC<CategoryPageComponentProps> = ({
 			</Flex>
 		);
 	}
-	console.log('inside data:', data);
+	// console.log('inside data:', data);
 	return (
 		<>
 			<Flex direction={'column'} w={'full'} gap={4} px={{ base: 4, md: 12 }}>

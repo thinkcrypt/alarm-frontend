@@ -1,6 +1,5 @@
 'use client';
 import React, { FC, useState, useEffect } from 'react';
-import PageLayout from '../Layout/PageLayout';
 import { Grid } from '@chakra-ui/react';
 import GridLeftPart from './GridLeftPart';
 import GridRightPart from './GridRightPart';
@@ -8,14 +7,26 @@ import AdditionalInfo from './AdditionalInfo';
 import CustomContainer from '../reusable/Container';
 import TabSection from './TabSection';
 import ClientProductSection from '../HomePage/ClientProductSection';
+import { trackViewContent } from '@/hooks/metaEvents';
 
 type ProductPageComponentProps = {
 	productData?: any;
+	contents?: any;
 };
-const ProductPageComponent: FC<ProductPageComponentProps> = ({ productData }) => {
+const ProductPageComponent: FC<ProductPageComponentProps> = ({
+	productData,
+	contents,
+}) => {
 	const [selectedImage, setSelectedImage] = useState(productData?.images[0]);
 	const [selectedSize, setSelectedSize] = useState('');
 	const [selectedColor, setSelectedColor] = useState('');
+
+	trackViewContent({
+		id: productData?._id,
+		name: productData?.name,
+		price: productData?.price,
+		category: productData?.category?.name,
+	});
 
 	// Update selected image when color/size changes
 	useEffect(() => {
@@ -25,15 +36,21 @@ const ProductPageComponent: FC<ProductPageComponentProps> = ({ productData }) =>
 		}
 
 		// Find matching variation
-		const matchingVariation = productData?.variations?.find((variation: any) => {
-			const sizeAttr = variation.attributes?.find((attr: any) => attr.label === 'size');
-			const colorAttr = variation.attributes?.find((attr: any) => attr.label === 'color');
+		const matchingVariation = productData?.variations?.find(
+			(variation: any) => {
+				const sizeAttr = variation.attributes?.find(
+					(attr: any) => attr.label === 'size'
+				);
+				const colorAttr = variation.attributes?.find(
+					(attr: any) => attr.label === 'color'
+				);
 
-			return (
-				(!selectedSize || sizeAttr?.value === selectedSize) &&
-				(!selectedColor || colorAttr?.value === selectedColor)
-			);
-		});
+				return (
+					(!selectedSize || sizeAttr?.value === selectedSize) &&
+					(!selectedColor || colorAttr?.value === selectedColor)
+				);
+			}
+		);
 
 		// Update image if variation has specific images
 		if (matchingVariation?.images?.[0]?.[0]) {
@@ -45,24 +62,25 @@ const ProductPageComponent: FC<ProductPageComponentProps> = ({ productData }) =>
 
 	useEffect(() => {
 		setSelectedSize(
-			productData?.variations?.[0]?.attributes?.find((attr: any) => attr.label === 'size')?.value ||
-				''
+			productData?.variations?.[0]?.attributes?.find(
+				(attr: any) => attr.label === 'size'
+			)?.value || ''
 		);
 		setSelectedColor(
-			productData?.variations?.[0]?.attributes?.find((attr: any) => attr.label === 'color')
-				?.value || ''
+			productData?.variations?.[0]?.attributes?.find(
+				(attr: any) => attr.label === 'color'
+			)?.value || ''
 		);
 	}, [productData]);
 
 	return (
-		<PageLayout>
-			<CustomContainer
-				pt={0}
-				bg='white'>
+		<>
+			<CustomContainer pt={0} bg='white'>
 				<Grid
 					templateColumns={{ base: '1fr', md: '3fr 3fr' }}
 					gap={{ base: 6, lg: 6, xl: 12, '2xl': 32 }}
-					py={6}>
+					py={6}
+				>
 					<GridLeftPart
 						product={productData}
 						selectedImage={selectedImage}
@@ -78,10 +96,8 @@ const ProductPageComponent: FC<ProductPageComponentProps> = ({ productData }) =>
 					/>
 				</Grid>
 			</CustomContainer>
-			<CustomContainer
-				pt={0}
-				bg='white'>
-				<TabSection product={productData} />
+			<CustomContainer pt={0} bg='white'>
+				<TabSection product={productData} contents={contents}/>
 
 				<ClientProductSection
 					title='Related Products'
@@ -90,7 +106,7 @@ const ProductPageComponent: FC<ProductPageComponentProps> = ({ productData }) =>
 			</CustomContainer>
 
 			<AdditionalInfo />
-		</PageLayout>
+		</>
 	);
 };
 
