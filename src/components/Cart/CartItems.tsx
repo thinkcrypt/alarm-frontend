@@ -32,6 +32,8 @@ const CartItems = () => {
 				id: item.id,
 				name: item.name,
 				price: item.unitPrice || item.price,
+				bulkDiscounts: item?.bulkDiscounts || [],
+				basePrice: item.price,
 				vat: item.vat || 0,
 				image: item.image,
 				selectedSize: item.selectedSize,
@@ -49,9 +51,7 @@ const CartItems = () => {
 	};
 
 	return (
-		<VStack
-			gap={4}
-			align='stretch'>
+		<VStack gap={4} align='stretch'>
 			{!cartItems || cartItems.length === 0 ? (
 				<EmptyState.Root>
 					<EmptyState.Content>
@@ -83,7 +83,9 @@ const CartItems = () => {
 							variantName: item.variantName || '',
 						}}
 						onRemove={() => handleRemove(item.uniqueId)}
-						onUpdateQuantity={(qty: number) => handleUpdateQuantity(item.uniqueId, qty)}
+						onUpdateQuantity={(qty: number) =>
+							handleUpdateQuantity(item.uniqueId, qty)
+						}
 					/>
 				))
 			)}

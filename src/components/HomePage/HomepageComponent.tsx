@@ -26,15 +26,22 @@ const HomepageComponent: FC<HomepageComponentProps> = ({
 	banners,
 	contents,
 }) => {
-	const displayInHomeCategories = categoryData?.filter(
-		(category: any) => category?.displayInHomePage && !category?.isFeatured
-	);
+	// const displayInHomeCategories = categoryData?.filter(
+	// 	(category: any) => category?.displayInHomePage && !category?.isFeatured
+	// );
 
-	const featuredAndHomeCategories = categoryData?.filter(
-		(category: any) => category?.displayInHomePage && category?.isFeatured
-	);
+	// const featuredAndHomeCategories = categoryData?.filter(
+	// 	(category: any) => category?.displayInHomePage && category?.isFeatured
+	// );
 	// statin
 	const gridCategories = getContentBySlug(contents, 'grid-categories');
+	const productList = getContentBySlug(contents, 'product-list');
+	const categoryShowcase = getContentBySlug(contents, 'category-showcase');
+	const secondaryProductList = getContentBySlug(
+		contents,
+		'secondary-product-list'
+	);
+
 	return (
 		<PageLayout categoryData={categoryData}>
 			{/* Full Width Banner Section - Outside Container */}
@@ -47,30 +54,30 @@ const HomepageComponent: FC<HomepageComponentProps> = ({
 
 			<CustomContainer>
 				{/* Show first category product section */}
-				{displayInHomeCategories?.slice(0, 1).map((cat: any, idx: number) => (
+
+				{productList?.list?.map((cat: any, idx: number) => (
 					<ProductSection
-						id={cat?._id}
+						id={cat}
 						key={idx}
-						title={cat.name}
-						products={productData?.filter(
-							(product: any) => product?.category?.name === cat.name
-						)}
+						title={cat}
+						products={[]}
+						perRow={productList?.content}
 					/>
 				))}
 			</CustomContainer>
 
 			{/* CategoryShowcase2 Section after first product section */}
-			<CategoryShowcase2 categoryData={categoryData} />
+			<CategoryShowcase2 categoryData={categoryShowcase} />
 
 			<CustomContainer>
-				{displayInHomeCategories?.slice(1).map((cat: any, idx: number) => (
+				{secondaryProductList?.list?.map((cat: any, idx: number) => (
 					<ProductSection
-						id={cat?._id}
+						id={cat}
 						key={idx}
-						title={cat.name}
-						products={productData?.filter(
-							(product: any) => product?.category?.name === cat.name
-						)}
+						title={cat}
+						products={[]}
+						name={secondaryProductList?.name}
+						perRow={secondaryProductList?.content}
 					/>
 				))}
 			</CustomContainer>
@@ -79,14 +86,8 @@ const HomepageComponent: FC<HomepageComponentProps> = ({
 
 			<CustomContainer>
 				<Flex direction='column' w='100%' h='100%' gap={4}>
-					{featuredAndHomeCategories?.map((cat: any, idx: number) => (
-						<CategorySection
-							key={idx}
-							category={cat}
-							products={productData?.filter(
-								(product: any) => product?.category?.name === cat.name
-							)}
-						/>
+					{secondaryProductList?.list?.map((cat: any, idx: number) => (
+						<CategorySection key={idx} category={cat} />
 					))}
 				</Flex>
 			</CustomContainer>

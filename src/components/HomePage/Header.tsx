@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							<Link href={'/'} style={{ display: 'inline-block', marginBottom:'3px' }}>
 								{/* <AlarmLogo /> */}
 								<Image
-									src={'logo.png'}
+									src={'./logo.png'}
 									alt={'alarm-logo'}
 									w='100%'
 									h='22px'

@@ -1,4 +1,3 @@
-'use client';
 import {
 	Badge,
 	Box,
@@ -16,50 +15,44 @@ import { CategoryData } from '../data/productData';
 import { FiArrowUpRight } from 'react-icons/fi';
 import MiniProductCard from './MiniProductCard';
 import Link from 'next/link';
+import { getAllProduct } from '@/lib/ssr/getAllProduct';
 
 type CategorySectionProps = {
 	category: any;
-	products: any;
+	products?: any;
 };
 
-const CategorySection: React.FC<CategorySectionProps> = ({ products, category }) => {
-	const mainImageHeight = useBreakpointValue({
-		base: '250px',
-		md: '400px',
-		lg: '300px',
+const CategorySection: React.FC<CategorySectionProps> = async ({
+	category,
+}) => {
+	const maxProducts = 6;
 
-		'xl': '490px',
-	});
+	const products = await getAllProduct(category, '6');
 
-	const maxProducts = useBreakpointValue({
-		base: products?.length || 0,
-		md: products?.length || 0,
-		lg: Math.min(products?.length || 0, 6),
-		'2xl': Math.min(products?.length || 0, 8),
-	});
+	const displayProducts = products?.doc?.slice(0, maxProducts) || [];
 
-	const displayProducts = products?.slice(0, maxProducts) || [];
+	if (products?.totalDocs < 4) return null;
 
 	return (
-		<Box
-			w='100%'
-			overflow='hidden'>
+		<Box w='100%' overflow='hidden'>
 			<Grid
-				templateColumns={{ base: '1fr', lg: '250px 1fr', 'xl': '400px 1fr' }}
-				gap={{ base: 4, md: 3, xl: 4 }}
+				templateColumns={{ base: '1fr', lg: '250px 1fr', '2xl': '400px 1fr' }}
+				gap={{ base: 4, md: 4 }}
 				alignItems='start'
-				w='100%'>
+				w='100%'
+			>
 				{/* Main Category Image */}
 				<GridItem w='100%'>
-					<Link href={`/category/${category?.id}`}>
+					<Link href={`/category/${category}`}>
 						<Box
 							position='relative'
-							h={mainImageHeight}
+							h={{ base: '250px', md: '400px', lg: '450px', '2xl': '490px' }}
 							overflow='hidden'
 							bg='gray.100'
-							w='100%'>
+							w='100%'
+						>
 							<Image
-								src={category?.image}
+								src={displayProducts?.[0]?.image || category?.image}
 								alt={category?.name}
 								w='100%'
 								h='100%'
@@ -71,7 +64,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 								left={0}
 								right={0}
 								bottom={0}
-								bg='linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.4))'>
+								bg='linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.4))'
+							>
 								<Box
 									position='absolute'
 									bottom={0}
@@ -82,8 +76,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 									justifyContent='center'
 									textAlign='center'
 									p={{ base: 4, md: 6 }}
-									color='white'>
-									<Text fontSize={{ base: 'lg', md: 'xl' }}>{category?.name}</Text>
+									color='white'
+								>
+									<Text fontSize={{ base: 'lg', md: 'xl' }}>
+										{products?.doc?.[0]?.category?.name || '--'}
+									</Text>
 								</Box>
 							</Box>
 						</Box>
@@ -101,25 +98,24 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 						}}
 						gap={{ base: 2, md: 3 }}
 						w='100%'
-						h={{ lg: mainImageHeight }}
+						h={{ lg: '450px' }}
 						overflow='auto'
 						alignContent='start'
-						templateRows={{ '2xl': 'repeat(2, 1fr)' }}>
+						templateRows={{ '2xl': 'repeat(2, 1fr)' }}
+					>
 						{displayProducts?.map((product: any, index: number) => {
 							const isLastItem = index === displayProducts?.length - 1;
 							return (
-								<GridItem
-									key={product?.id}
-									w='100%'
-									position='relative'>
+								<GridItem key={product?.id} w='100%' position='relative'>
 									<Box
 										w='100%'
 										h={{
 											base: 'auto',
-											lg: `calc((${mainImageHeight} - 12px) / 2)`,
+											lg: `calc((450px - 12px) / 2)`,
 										}}
-										position='relative'>
-										<Link href={`/details/${product?.id}`}>
+										position='relative'
+									>
+										<Link href={`/product/${product?.slug}`}>
 											<MiniProductCard
 												image={product?.image}
 												price={product?.price}
@@ -133,7 +129,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 											/>
 										</Link>
 										{isLastItem && (
-											<Link href={`/category/${category?.id}`}>
+											<Link href={`/category/${category}`}>
 												<Center
 													position='absolute'
 													top={0}
@@ -142,10 +138,12 @@ const CategorySection: React.FC<CategorySectionProps> = ({ products, category })
 													h='100%'
 													bg='blackAlpha.600'
 													color='white'
-													fontWeight='bold'
-													fontSize='4xl'
+													fontWeight='semibold'
+													textTransform='uppercase'
+													fontSize={{ base: '3xl', md: '3xl' }}
 													cursor='pointer'
-													_hover={{ bg: 'blackAlpha.700' }}>
+													_hover={{ bg: 'blackAlpha.700' }}
+												>
 													View More
 												</Center>
 											</Link>

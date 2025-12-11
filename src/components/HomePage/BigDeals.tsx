@@ -114,7 +114,7 @@ const BigDeals = () => (
 				mb={8}
 				bgColor={colors.cardBg}
 				p={4}>
-				{infoSections.map((section, index) => (
+				{infoSections?.map((section, index) => (
 					<Box
 						key={index}
 						mb={index === infoSections.length - 1 ? 8 : 6}>
@@ -170,7 +170,7 @@ const BigDeals = () => (
 					}}
 					gap={{ base: 2, md: 6 }}
 					w='100%'>
-					{storeLocations.map(store => (
+					{storeLocations?.map(store => (
 						<GridItem key={store.id}>
 							<Box
 								p={5}

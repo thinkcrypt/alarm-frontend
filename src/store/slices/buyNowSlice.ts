@@ -1,3 +1,4 @@
+import { getBulkUnitPrice } from '@/lib/getBulkUnitPrice';
 import { createSlice } from '@reduxjs/toolkit';
 
 const CART_NAME = 'DDONG_QUICK_CART_ONE';
@@ -19,6 +20,8 @@ export type CartItem = {
 	variantStock?: number;
 	variantName?: string;
 	variantId?: string;
+	bulkDiscounts?: any[];
+	basePrice?: number; // stable
 };
 
 export type Address = {
@@ -68,14 +71,18 @@ const initialState: State = {
 
 // Helper function to save state to local storage
 const saveStateToNowLocalStorage = (state: typeof initialState) => {
-	typeof window !== 'undefined' && localStorage.setItem(CART_NAME, JSON.stringify(state));
+	typeof window !== 'undefined' &&
+		localStorage.setItem(CART_NAME, JSON.stringify(state));
 };
 
 // Helper function to calculate totals
 const calculateNowTotals = (state: State) => {
-	state.subTotal = state.cartItems.reduce((total: number, cartItem: CartItem) => {
-		return total + cartItem.price * cartItem.qty;
-	}, 0);
+	state.subTotal = state.cartItems.reduce(
+		(total: number, cartItem: CartItem) => {
+			return total + cartItem.price * cartItem.qty;
+		},
+		0
+	);
 
 	state.vat = state.cartItems.reduce((total: number, cartItem: CartItem) => {
 		if (cartItem.vat) {
@@ -85,7 +92,10 @@ const calculateNowTotals = (state: State) => {
 	}, 0);
 
 	state.total = state.subTotal + state.vat + state.shipping - state.discount;
-	state.totalItems = state.cartItems.reduce((total, item) => total + item.qty, 0);
+	state.totalItems = state.cartItems.reduce(
+		(total, item) => total + item.qty,
+		0
+	);
 };
 
 export const buyNowSlice = createSlice({
@@ -96,7 +106,13 @@ export const buyNowSlice = createSlice({
 			: initialState,
 	reducers: {
 		calculateNowCartTotals: (state, action) => {
-			const { subTotal = 0, total = 0, vat = 0, discount = 0, shipping = 0 } = action.payload;
+			const {
+				subTotal = 0,
+				total = 0,
+				vat = 0,
+				discount = 0,
+				shipping = 0,
+			} = action.payload;
 			state.subTotal = subTotal;
 			state.total = total;
 			state.vat = vat;
@@ -114,7 +130,8 @@ export const buyNowSlice = createSlice({
 			// Create unique ID based on product and variation
 			const baseId = item?._id || item?.id;
 			const variationPart =
-				item.variationId || `${item.selectedSize || 'no-size'}-${item.selectedColor || 'no-color'}`;
+				item.variationId ||
+				`${item.selectedSize || 'no-size'}-${item.selectedColor || 'no-color'}`;
 			const uniqueId = `${baseId}-${variationPart}`;
 
 			// Check stock if variation has stock info
@@ -127,7 +144,8 @@ export const buyNowSlice = createSlice({
 			const existItem = state.cartItems.find(
 				(stateItem: CartItem) => stateItem.uniqueId === uniqueId
 			);
-
+			// bulk tiers (safe fallback)
+			const tiers = item.bulkDiscounts || [];
 			if (existItem) {
 				const updatedQty = Number(existItem.qty) + Number(qty);
 
@@ -136,28 +154,35 @@ export const buyNowSlice = createSlice({
 					console.warn('Insufficient stock for updated quantity:', item.name);
 					return;
 				}
-
-				const updatedPrice = existItem.unitPrice * updatedQty;
-
+				const basePrice = existItem?.basePrice;
+				// const updatedPrice = existItem.unitPrice * updatedQty;
+				const newUnitPrice = getBulkUnitPrice(updatedQty, basePrice, tiers);
 				state.cartItems = state.cartItems.map((stateItem: CartItem) =>
 					stateItem.uniqueId === uniqueId
 						? {
 								...stateItem,
 								qty: updatedQty,
-								price: updatedPrice,
+								unitPrice: newUnitPrice,
+								price: newUnitPrice * updatedQty,
+								basePrice,
+								// keep bulk/base info for future recalculation
+								...(tiers?.length ? { bulkDiscounts: tiers } : {}),
 						  }
 						: stateItem
 				);
 			} else {
+				const basePrice = item?.price; // product price
+				const unitPrice = getBulkUnitPrice(qty, basePrice, tiers);
 				const newItem: CartItem = {
 					uniqueId: uniqueId,
 					_id: item._id || item.id,
 					id: item.id || item._id,
 					name: item.name,
-					price: item.price * qty,
-					unitPrice: item.price,
+					price: unitPrice * qty,
+					unitPrice: unitPrice,
 					vat: item.vat || 0,
 					qty: qty,
+					basePrice,
 					image: item.image,
 					// Variation-specific fields
 					selectedSize: item.selectedSize,
@@ -169,6 +194,7 @@ export const buyNowSlice = createSlice({
 							? `${item.selectedSize} / ${item.selectedColor}`
 							: item.selectedSize || item.selectedColor || '',
 					variantId: item.variationId,
+					bulkDiscounts: tiers || [],
 				};
 
 				state.cartItems = [newItem];
@@ -202,12 +228,23 @@ export const buyNowSlice = createSlice({
 
 			if (findItem) {
 				if (findItem.qty > 1) {
+					const updatedQty = findItem.qty - 1;
+
+					const tiers = findItem?.bulkDiscounts || [];
+					// const basePrice = findItem.unitPrice ?? findItem.price;
+					// const basePrice = findItem.basePrice ?? findItem.unitPrice ?? findItem.price;
+					const basePrice = findItem?.basePrice;
+					//findItem.unitPrice ?? findItem.price ignored cause unite price changes based on discunt and price is total
+
+					const newUnitPrice = getBulkUnitPrice(updatedQty, basePrice, tiers);
 					state.cartItems = state.cartItems.map((stateItem: CartItem) =>
 						stateItem.uniqueId === uniqueId
 							? {
 									...stateItem,
-									qty: stateItem.qty - 1,
-									price: stateItem.unitPrice * (stateItem.qty - 1),
+									qty: updatedQty,
+									unitPrice: newUnitPrice,
+									price: newUnitPrice * updatedQty,
+									basePrice,
 							  }
 							: stateItem
 					);
@@ -308,3 +345,4 @@ export const {
 } = buyNowSlice.actions;
 
 export default buyNowSlice.reducer;
+
