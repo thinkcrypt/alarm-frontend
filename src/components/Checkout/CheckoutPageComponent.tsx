@@ -123,7 +123,7 @@ const CheckoutPageComponent = ({ type = 'cart' }: { type: 'cart' | 'buyNow' }) =
 			});
 		}
 	}, [result]);
-
+//flow
 	return (
 		<PageLayout>
 			<form onSubmit={handleConfirmOrder}>
