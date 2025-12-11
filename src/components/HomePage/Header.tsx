@@ -340,7 +340,10 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							</HStack>
 						)}
 					</Flex>
-
+					{/* Search Bar */}
+					{/* <Box display={{ base: 'none', lg: 'block' }}>
+						<SearchDropdown placeholder='Search products...' />
+					</Box> */}
 					{/* Right Side - Search & Icons */}
 					<HStack gap={2} justifySelf='end'>
 						<SearchDropdown placeholder='Search products...' />
