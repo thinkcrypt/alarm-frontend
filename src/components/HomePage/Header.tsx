@@ -114,10 +114,13 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							<MobileNav parentCategories={parents} />
 						</Box>
 						<Box display='flex' alignItems='center'>
-							<Link href={'/'} style={{ display: 'inline-block', marginBottom:'3px' }}>
+							<Link
+								href={'/'}
+								style={{ display: 'inline-block', marginBottom: '3px' }}
+							>
 								{/* <AlarmLogo /> */}
 								<Image
-									src={'logo.png'}
+									src={'/logo.png'}
 									alt={'alarm-logo'}
 									w='100%'
 									h='22px'
@@ -209,7 +212,7 @@ const Header: React.FC<HeaderProps> = ({ categoryData = [], isLoading }) => {
 							{/* <AlarmLogo /> */}
 
 							<Image
-								src={'logo.png'}
+								src={'/logo.png'}
 								alt={'alarm-logo'}
 								w='100%'
 								h='28px'

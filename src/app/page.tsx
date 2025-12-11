@@ -31,9 +31,9 @@ export default async function Home() {
 	const category = await getCategory();
 	const categoryData = category?.doc;
 
-	const product = await getAllProduct();
+	// const product = await getAllProduct();
 	const banners = await getAllBanners();
-	const productData = product?.doc;
+	// const productData = product?.doc;
 
 	// console.log('productData', productData);
 	// console.log('categoryData', categoryData);
@@ -42,7 +42,7 @@ export default async function Home() {
 	return (
 		<HomepageComponent
 			categoryData={categoryData}
-			productData={productData}
+			// productData={productData}
 			banners={banners}
 			contents={contents}
 		/>

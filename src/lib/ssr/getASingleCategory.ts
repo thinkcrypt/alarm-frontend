@@ -37,7 +37,8 @@ const getCachedSingleCategory = unstable_cache(
 	},
 	['single-category'],
 	{
-		revalidate: 900,
+		revalidate: 30,
+		// revalidate: 900,
 		tags: ['single-category'],
 	}
 );

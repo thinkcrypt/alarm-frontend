@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
 					>
 						{/* <AlarmLogo /> */}
 						<Image
-							src={'logo-dark.png'}
+							src={'/logo-dark.png'}
 							alt={'alarm-logo'}
 							w='100%'
 							h='28px'

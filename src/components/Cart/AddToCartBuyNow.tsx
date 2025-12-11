@@ -44,6 +44,8 @@ const AddToCartBuyNow: React.FC<{ product: DetailedProduct }> = ({
 			id: product.id,
 			name: product.name,
 			price: product.price,
+			bulkDiscounts: product?.bulkDiscounts,
+			basePrice: product.price,
 			vat: product.vat || 0,
 			image: primaryImage,
 		};
@@ -62,6 +64,8 @@ const AddToCartBuyNow: React.FC<{ product: DetailedProduct }> = ({
 				id: product.id,
 				name: product.name,
 				price: product.price,
+				bulkDiscounts: product?.bulkDiscounts,
+				basePrice: product.price,
 				vat: product.vat || 0,
 				image: primaryImage,
 			};

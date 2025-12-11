@@ -1,7 +1,11 @@
 import React from 'react';
 import { Box, Button, Flex, Image, NumberInput, Text } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { deleteSingleItemFromCart, addToCart, deleteOneFromCart } from '@/store/slices/cartSlice';
+import {
+	deleteSingleItemFromCart,
+	addToCart,
+	deleteOneFromCart,
+} from '@/store/slices/cartSlice';
 import {
 	deleteSingleItemNowFromCart,
 	addToNowCart,
@@ -42,6 +46,8 @@ const CartItemCard = ({
 				id: item.id,
 				name: item.name,
 				price: item.unitPrice || item.price,
+				bulkDiscounts: item?.bulkDiscounts || [],
+				basePrice: item.basePrice,
 				vat: item.vat || 0,
 				image: item.image,
 				selectedSize: item.selectedSize,
@@ -63,13 +69,8 @@ const CartItemCard = ({
 	};
 
 	return (
-		<Flex
-			justify='space-between'
-			gap={4}
-			mb={4}>
-			<Flex
-				gap={4}
-				align='center'>
+		<Flex justify='space-between' gap={4} mb={4}>
+			<Flex gap={4} align='center'>
 				<Image
 					src={item?.image}
 					alt={item?.name}
@@ -78,37 +79,26 @@ const CartItemCard = ({
 					objectFit='cover'
 				/>
 				<Box>
-					<Text
-						fontWeight='semibold'
-						fontSize='sm'>
+					<Text fontWeight='semibold' fontSize='sm'>
 						{item?.name}
 					</Text>
-					<Text
-						fontSize='xs'
-						fontWeight='semibold'
-						color='gray.600'>
+					<Text fontSize='xs' fontWeight='semibold' color='gray.600'>
 						{item?.variantName}
 					</Text>
-					<Text
-						fontSize='xs'
-						color='gray.500'>
+					<Text fontSize='xs' color='gray.500'>
 						qty: {item.qty}
 					</Text>
 				</Box>
 			</Flex>
-			<Flex
-				justify='flex-end'
-				flexDir='column'
-				gap={3}>
-				<Text
-					ml='auto'
-					fontWeight='bold'
-					fontSize='sm'>
-					৳ {(item.unitPrice ? item.unitPrice * item.qty : item.price).toLocaleString()}
+			<Flex justify='flex-end' flexDir='column' gap={3}>
+				<Text ml='auto' fontWeight='bold' fontSize='sm'>
+					৳{' '}
+					{(item.unitPrice
+						? item.unitPrice * item.qty
+						: item.price
+					).toLocaleString()}
 				</Text>
-				<Flex
-					gap={2}
-					align='center'>
+				<Flex gap={2} align='center'>
 					<NumberInput.Root
 						size='xs'
 						ml='auto'
@@ -116,7 +106,10 @@ const CartItemCard = ({
 						justifySelf='flex-end'
 						value={item?.qty?.toString()}
 						min={1}
-						onValueChange={(details: any) => handleUpdateQuantity(details?.valueAsNumber)}>
+						onValueChange={(details: any) =>
+							handleUpdateQuantity(details?.valueAsNumber)
+						}
+					>
 						<NumberInput.Control h='32px' />
 						<NumberInput.Input
 							h='32px'
@@ -127,7 +120,8 @@ const CartItemCard = ({
 						variant='outline'
 						size='xs'
 						colorPalette='red'
-						onClick={() => handleRemove()}>
+						onClick={() => handleRemove()}
+					>
 						<Trash size={12} />
 					</Button>
 				</Flex>

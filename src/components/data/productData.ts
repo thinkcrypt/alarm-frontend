@@ -1,28 +1,27 @@
 export const newArrivals = Array.from({ length: 5 }, () => ({
-  image: "/image-9.webp",
-  title: "Premium Cotton T-Shirt",
-  price: "899",
-  originalPrice: "1299",
-  discount: "30",
+	image: '/image-9.webp',
+	title: 'Premium Cotton T-Shirt',
+	price: '899',
+	originalPrice: '1299',
+	discount: '30',
 }));
 
 export const signatureProducts = Array.from({ length: 5 }, () => ({
-  image: "/api/placeholder/250/200",
-  title: "Signature Polo Shirt",
-  price: "1299",
-  originalPrice: "1899",
-  discount: "25",
+	image: '/api/placeholder/250/200',
+	title: 'Signature Polo Shirt',
+	price: '1299',
+	originalPrice: '1899',
+	discount: '25',
 }));
-
 
 // data.ts
 export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  isViewMore?: boolean;
+	id: number;
+	name: string;
+	price: number;
+	originalPrice?: number;
+	image: string;
+	isViewMore?: boolean;
 }
 
 // ✅ Full product type for catalog
@@ -38,158 +37,157 @@ export interface DetailedProduct {
 	category: string;
 	subcategory: string;
 	images: any[];
+	bulkDiscounts?: any[];
 	sizeChart: string;
 	description?: string;
 	delivery?: string;
 	vat?: string;
 }
 
-
 export interface CategoryData {
-  title: string;
-  mainImage: string;
-  products: Product[];
+	title: string;
+	mainImage: string;
+	products: Product[];
 }
 
 export interface CategoryItem {
-  id: any;
-  title: string;
-  image: string;
+	id: any;
+	title: string;
+	image: string;
 }
 
-
 export const menPoloData: CategoryData = {
-  title: "Mens Collection",
-  mainImage: "/image-1.webp",
-  products: [
-    {
-      id: 1,
-      name: "Classic Polo",
-      price: 1200.00,
-      originalPrice: 1500.00,
-      image: "/image-2.webp"
-    },
-    {
-      id: 2,
-      name: "Striped Polo",
-      price: 1140.00,
-      originalPrice: 1400.00,
-      image: "/image-3.webp"
-    },
-    {
-      id: 3,
-      name: "Premium Polo",
-      price: 1140.00,
-      originalPrice: 1450.00,
-      image: "/image-4.webp"
-    },
-    {
-      id: 4,
-      name: "Sport Polo",
-      price: 1140.00,
-      originalPrice: 1450.00,
-      image: "/image-5.webp"
-    },
-    {
-      id: 5,
-      name: "Contrast Polo",
-      price: 790.00,
-      originalPrice: 1100.00,
-      image: "/image-6.webp"
-    },
-    {
-      id: 6,
-      name: "Mint Polo",
-      price: 990.00,
-      originalPrice: 1200.00,
-      image: "/image-7.webp"
-    },
-    {
-      id: 7,
-      name: "Navy Polo",
-      price: 990.00,
-      originalPrice: 1250.00,
-      image: "/image-8.webp"
-    },
-    {
-      id: 8,
-      name: "",
-      price: 750.00,
-      originalPrice: 950.00,
-      image: "/image-9.jpg",
-      isViewMore: true
-    }
-  ]
+	title: 'Mens Collection',
+	mainImage: '/image-1.webp',
+	products: [
+		{
+			id: 1,
+			name: 'Classic Polo',
+			price: 1200.0,
+			originalPrice: 1500.0,
+			image: '/image-2.webp',
+		},
+		{
+			id: 2,
+			name: 'Striped Polo',
+			price: 1140.0,
+			originalPrice: 1400.0,
+			image: '/image-3.webp',
+		},
+		{
+			id: 3,
+			name: 'Premium Polo',
+			price: 1140.0,
+			originalPrice: 1450.0,
+			image: '/image-4.webp',
+		},
+		{
+			id: 4,
+			name: 'Sport Polo',
+			price: 1140.0,
+			originalPrice: 1450.0,
+			image: '/image-5.webp',
+		},
+		{
+			id: 5,
+			name: 'Contrast Polo',
+			price: 790.0,
+			originalPrice: 1100.0,
+			image: '/image-6.webp',
+		},
+		{
+			id: 6,
+			name: 'Mint Polo',
+			price: 990.0,
+			originalPrice: 1200.0,
+			image: '/image-7.webp',
+		},
+		{
+			id: 7,
+			name: 'Navy Polo',
+			price: 990.0,
+			originalPrice: 1250.0,
+			image: '/image-8.webp',
+		},
+		{
+			id: 8,
+			name: '',
+			price: 750.0,
+			originalPrice: 950.0,
+			image: '/image-9.jpg',
+			isViewMore: true,
+		},
+	],
 };
 
 export const womenKurtiData: CategoryData = {
-  title: "Women Collection",
-  mainImage: "/image-10.jpg",
-  products: [
-    {
-      id: 9,
-      name: "Floral Kurti",
-      price: 1140.00,
-      originalPrice: 1450.00,
-      image: "/image-11.webp"
-    },
-    {
-      id: 10,
-      name: "Purple Dress",
-      price: 1950.00,
-      originalPrice: 2200.00,
-      image: "/image-12.png"
-    },
-    {
-      id: 11,
-      name: "Black Tunic",
-      price: 1590.00,
-      originalPrice: 1800.00,
-      image: "/image-13.webp"
-    },
-    {
-      id: 12,
-      name: "Printed Top",
-      price: 1290.00,
-      originalPrice: 1500.00,
-      image: "/image-14.webp"
-    },
-    {
-      id: 13,
-      name: "Floral Tunic",
-      price: 1230,
-      image: "/image-15.webp"
-    },
-    {
-      id: 14,
-      name: "Teal Dress",
-      price: 1950.00,
-      originalPrice: 2200.00,
-      image: "/image-16.webp"
-    },
-    {
-      id: 15,
-      name: "Blue Top",
-      price: 1150.00,
-      originalPrice: 1250.00,
-      image: "/image-1.webp"
-    },
-    {
-      id: 16,
-      name: "",
-      price: 1250.00,
-      originalPrice: 1500.00,
-      image: "/image-2.webp",
-      isViewMore: true
-    }
-  ]
+	title: 'Women Collection',
+	mainImage: '/image-10.jpg',
+	products: [
+		{
+			id: 9,
+			name: 'Floral Kurti',
+			price: 1140.0,
+			originalPrice: 1450.0,
+			image: '/image-11.webp',
+		},
+		{
+			id: 10,
+			name: 'Purple Dress',
+			price: 1950.0,
+			originalPrice: 2200.0,
+			image: '/image-12.png',
+		},
+		{
+			id: 11,
+			name: 'Black Tunic',
+			price: 1590.0,
+			originalPrice: 1800.0,
+			image: '/image-13.webp',
+		},
+		{
+			id: 12,
+			name: 'Printed Top',
+			price: 1290.0,
+			originalPrice: 1500.0,
+			image: '/image-14.webp',
+		},
+		{
+			id: 13,
+			name: 'Floral Tunic',
+			price: 1230,
+			image: '/image-15.webp',
+		},
+		{
+			id: 14,
+			name: 'Teal Dress',
+			price: 1950.0,
+			originalPrice: 2200.0,
+			image: '/image-16.webp',
+		},
+		{
+			id: 15,
+			name: 'Blue Top',
+			price: 1150.0,
+			originalPrice: 1250.0,
+			image: '/image-1.webp',
+		},
+		{
+			id: 16,
+			name: '',
+			price: 1250.0,
+			originalPrice: 1500.0,
+			image: '/image-2.webp',
+			isViewMore: true,
+		},
+	],
 };
 
 export const categoryData: CategoryItem[] = [
 	{
 		id: 'Shirts',
 		title: 'Shirts',
-		image: 'image-2.webp'
+		image: 'image-2.webp',
 	},
 	{
 		id: 'Panjabi',
@@ -209,22 +207,21 @@ export const categoryData: CategoryItem[] = [
 ];
 
 export const product: DetailedProduct = {
-  id: 1,
-  name: 'Premium Jacquard Polo Shirts For Men',
-  price: 1160,
-  oldPrice: 1450,
-  discount: 20,
-  color: 'Navy Blue',
-  sizes: ['M', 'L', 'XL', 'XXL', '3XL'],
-  sku: 'SU3P008',
-  category: "Men's",
-  subcategory: "Polo Shirt",
-  images: ['/image-1.webp', '/image-2.webp', '/image-3.webp'],
-  sizeChart: '/sizechart.webp',
-  description: "...",
-  delivery: "...",
+	id: 1,
+	name: 'Premium Jacquard Polo Shirts For Men',
+	price: 1160,
+	oldPrice: 1450,
+	discount: 20,
+	color: 'Navy Blue',
+	sizes: ['M', 'L', 'XL', 'XXL', '3XL'],
+	sku: 'SU3P008',
+	category: "Men's",
+	subcategory: 'Polo Shirt',
+	images: ['/image-1.webp', '/image-2.webp', '/image-3.webp'],
+	sizeChart: '/sizechart.webp',
+	description: '...',
+	delivery: '...',
 };
-
 
 export const products: DetailedProduct[] = [
 	{
@@ -368,4 +365,3 @@ export const products: DetailedProduct[] = [
 		sizeChart: '/sizechart.webp',
 	},
 ];
-
